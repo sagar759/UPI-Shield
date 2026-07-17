@@ -21,7 +21,7 @@ versioning, and rollback explicit.
 
 | Layer | Prototype | Production Direction | Purpose |
 | --- | --- | --- | --- |
-| Client | React, TypeScript, Vite | React/native client | Payment and warning flows |
+| Client | Next.js, TypeScript | React/native client | Payment and warning flows |
 | Design | CSS tokens, Lucide React | Organization design system | Material-inspired UI |
 | API | Local TypeScript services | FastAPI, Pydantic | Validation and orchestration |
 | Transaction | Weighted rules | Calibrated RF/XGBoost plus rules | Behavioral anomaly |

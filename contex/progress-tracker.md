@@ -2,12 +2,13 @@
 
 ## Current Phase
 
-Phase 0 - system planning and design complete.
+Phase 1 - design-system foundation complete.
 
 ## Current Goal
 
-Preserve the approved planning baseline until the user starts the implementation
-phase. No application, dataset, or model has been built in this phase.
+The reusable visual foundation from `Specs-folder/01-design-system.md` is
+implemented and verified. Product screens and shared components remain
+intentionally unbuilt until their later specifications are approved.
 
 ## Completed
 
@@ -24,19 +25,48 @@ phase. No application, dataset, or model has been built in this phase.
   synthetic-generation prompts, training/evaluation plans, and acceptance gates.
 - Completed a cross-document review of status, thresholds, weights, privacy,
   implementation claims, Markdown structure, placeholders, and encoding.
+- Implemented the UPI Shield semantic design tokens, Tailwind CSS 4 theme
+  aliases, global reset/defaults, focus treatment, reduced-motion behavior, and
+  shared typography/accessibility utilities.
+- Replaced the starter font and metadata setup with Inter through `next/font`,
+  India-specific document language, and prototype-safe UPI Shield metadata.
+- Verified the design-system unit with `npm run lint`, `npx tsc --noEmit`,
+  `npm run build`, `git diff --check`, and a semantic color-token contrast audit (updated `--text-muted` to `#687181` to satisfy WCAG AA 4.5:1 contrast requirements).
 
 ## In Progress
 
-- None. Waiting for explicit approval to begin a future build phase.
+- None. Awaiting approval for the next implementation specification.
 
-## Next Phase (Not Started)
+## Next Phase
 
-1. Scaffold React/TypeScript UI.
-2. Implement deterministic demo detectors and scenarios.
+1. Continue with the next approved implementation specification.
+2. Implement deterministic demo detectors and scenarios in their planned phase.
 3. Implement seeded synthetic-data generators and validators.
 4. Implement FastAPI contracts and service boundaries.
 5. Train and compare the three detector baselines.
-6. Add fusion, explanations, complaint drafting, tests, and monitoring.
+
+## Design System Handoff
+
+- Canonical colors: `--bg-base`, `--bg-surface`, `--bg-subtle`,
+  `--text-primary`, `--text-secondary`, `--text-muted`, `--accent-primary`,
+  `--accent-primary-hover`, `--accent-cyan`, `--accent-yellow`,
+  `--border-default`, `--border-strong`, `--state-success`,
+  `--state-success-bg`, `--state-warning`, `--state-warning-bg`,
+  `--state-error`, `--state-error-bg`, and `--focus-ring`.
+- Foundation namespaces: `--font-family-*`, `--type-*`, `--space-*`,
+  `--layout-*`, `--border-width-*`, `--shape-radius-*`, `--elevation-*`,
+  `--control-size-*`, `--icon-size-*`, `--avatar-size-*`, `--focus-*`,
+  `--motion-*`, and `--layer-*`.
+- Risk combinations: `--risk-low-*`, `--risk-medium-*`, `--risk-high-*`,
+  `--risk-unavailable-*`, and `--risk-neutral-*`, each with text, icon,
+  surface, and border roles.
+- Tailwind aliases use semantic `--color-*`, `--font-*`, `--text-*`,
+  `--radius-*`, `--shadow-*`, `--spacing-*`, motion, breakpoint, and layer
+  theme values. Default raw color, font, radius, and shadow namespaces are
+  cleared so later components use the approved roles.
+- Shared utilities: `.numeric-tabular`, `.font-technical`, and
+  `.visually-hidden`.
+- Approved deviations from `ui-context.md`: none.
 
 ## Open Questions
 
@@ -49,7 +79,7 @@ phase. No application, dataset, or model has been built in this phase.
 
 ## Architecture Decisions
 
-- Planned client: React, TypeScript, and Vite.
+- Planned client: Next.js with Inter through next/font, India-specific document language, and prototype-safe UPI Shield metadata.
 - Planned API: FastAPI and Pydantic.
 - Detectors remain independent and fuse through one versioned policy.
 - Initial models: transparent rules, Random Forest/XGBoost transaction model,

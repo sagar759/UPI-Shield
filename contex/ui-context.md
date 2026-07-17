@@ -20,7 +20,7 @@ duplicate proprietary artwork, or imply integration.
 | Subtle surface | --bg-subtle | #f1f5f9 |
 | Primary text | --text-primary | #172033 |
 | Secondary text | --text-secondary | #566074 |
-| Muted text | --text-muted | #7b8496 |
+| Muted text | --text-muted | #687181 |
 | Primary | --accent-primary | #1a73e8 |
 | Primary hover | --accent-primary-hover | #155fc0 |
 | Cyan accent | --accent-cyan | #0f9d9a |
