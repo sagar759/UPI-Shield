@@ -1,97 +1,62 @@
 # Progress Tracker
 
-## Current Phase
+## Status
 
-Phase 1 - design-system foundation complete.
+Phase 4 complete. Specifications 01-04 are implemented and verified. Continue
+with the next approved specification after
+`Specs-folder/04-domain-contracts-and-schema-versions.md`.
 
-## Current Goal
+## Implemented
 
-The reusable visual foundation from `Specs-folder/01-design-system.md` is
-implemented and verified. Product screens and shared components remain
-intentionally unbuilt until their later specifications are approved.
+- Planning: product scope, architecture, UI rules, code standards, AI workflow,
+  detector/data plan, privacy boundaries, and demo scenarios are documented in
+  the other `contex/*.md` files.
+- Spec 01: semantic CSS/Tailwind tokens, reset, accessibility utilities, Inter
+  font, India locale, and prototype-safe metadata.
+- Spec 02: controlled `EditorNavbar`, overlay `ProjectSidebar`, project
+  creation callback, shadcn-style Radix Tabs/Dialog primitives, Lucide icons,
+  and shared `cn` utility.
+- Spec 03: Vitest/jsdom, React Testing Library, axe, deterministic test helpers,
+  V8 coverage, and Playwright Chromium projects for 1440x900 desktop and
+  360x800 mobile. Playwright uses `127.0.0.1:3100` and
+  `.next-playwright`, so it can run beside the port-3000 dev server.
+- Spec 04: Domain Contracts and Schema Versions. Defined strict, versioned schemas and TypeScript types for detectors, transaction inputs, message inputs, receiver inputs, risk decisions, audit records, user actions, complaint drafts, and demo scenarios. Implemented runtime validation boundaries using Zod to ensure type-safety and correct unavailable-detector scoring rules.
+- Quality commands and fixture naming are documented in `README.md`.
 
-## Completed
+## Verified
 
-- Reviewed the supplied 21-page UPI Fraud Shield study guide.
-- Defined the problem, users, scope, flows, scenarios, and success criteria.
-- Defined three detector boundaries, common output contract, fusion weights,
-  thresholds, missing-signal behavior, and action policy.
-- Defined future API, storage, authentication, privacy, security, monitoring,
-  and delivery architecture.
-- Defined Material-inspired UI direction, tokens, layouts, components, content,
-  warning behavior, and accessibility requirements.
-- Defined engineering, data, model, testing, and AI workflow rules.
-- Added the detailed three-detector llmworkflow.md with Kaggle surrogate data,
-  synthetic-generation prompts, training/evaluation plans, and acceptance gates.
-- Completed a cross-document review of status, thresholds, weights, privacy,
-  implementation claims, Markdown structure, placeholders, and encoding.
-- Implemented the UPI Shield semantic design tokens, Tailwind CSS 4 theme
-  aliases, global reset/defaults, focus treatment, reduced-motion behavior, and
-  shared typography/accessibility utilities.
-- Replaced the starter font and metadata setup with Inter through `next/font`,
-  India-specific document language, and prototype-safe UPI Shield metadata.
-- Verified the design-system unit with `npm run lint`, `npx tsc --noEmit`,
-  `npm run build`, `git diff --check`, and a semantic color-token contrast audit (updated `--text-muted` to `#687181` to satisfy WCAG AA 4.5:1 contrast requirements).
+- `npm run check`: lint, typecheck, 28 unit tests in 3 files, and production
+  build passed.
+- `npm run test:coverage` passed.
+- `npm run test:e2e`: desktop and mobile smoke/accessibility tests passed.
+- `git diff --check` passed.
 
-## In Progress
+## Current UI
 
-- None. Awaiting approval for the next implementation specification.
+- The root route still shows only the `UPI Fraud Shield` placeholder.
+- Navbar/sidebar/dialog primitives exist but are not mounted into an editor
+  page. No editor canvas, product screens, detectors, datasets, API, or models
+  are implemented yet.
 
-## Next Phase
+## Next Work
 
-1. Continue with the next approved implementation specification.
-2. Implement deterministic demo detectors and scenarios in their planned phase.
-3. Implement seeded synthetic-data generators and validators.
-4. Implement FastAPI contracts and service boundaries.
-5. Train and compare the three detector baselines.
+1. Implement only the next approved specification and add focused tests.
+2. Later phases: deterministic demo detectors, synthetic generators, FastAPI
+   contracts, then classical model training/evaluation.
 
-## Design System Handoff
+## Fixed Decisions
 
-- Canonical colors: `--bg-base`, `--bg-surface`, `--bg-subtle`,
-  `--text-primary`, `--text-secondary`, `--text-muted`, `--accent-primary`,
-  `--accent-primary-hover`, `--accent-cyan`, `--accent-yellow`,
-  `--border-default`, `--border-strong`, `--state-success`,
-  `--state-success-bg`, `--state-warning`, `--state-warning-bg`,
-  `--state-error`, `--state-error-bg`, and `--focus-ring`.
-- Foundation namespaces: `--font-family-*`, `--type-*`, `--space-*`,
-  `--layout-*`, `--border-width-*`, `--shape-radius-*`, `--elevation-*`,
-  `--control-size-*`, `--icon-size-*`, `--avatar-size-*`, `--focus-*`,
-  `--motion-*`, and `--layer-*`.
-- Risk combinations: `--risk-low-*`, `--risk-medium-*`, `--risk-high-*`,
-  `--risk-unavailable-*`, and `--risk-neutral-*`, each with text, icon,
-  surface, and border roles.
-- Tailwind aliases use semantic `--color-*`, `--font-*`, `--text-*`,
-  `--radius-*`, `--shadow-*`, `--spacing-*`, motion, breakpoint, and layer
-  theme values. Default raw color, font, radius, and shadow namespaces are
-  cleared so later components use the approved roles.
-- Shared utilities: `.numeric-tabular`, `.font-technical`, and
-  `.visually-hidden`.
-- Approved deviations from `ui-context.md`: none.
+- Prototype only: no real payment, bank/police/government integration, or
+  automatic complaint submission.
+- Detector weights: transaction 0.45, text 0.30, graph 0.25.
+- Risk bands: low <0.40, medium 0.40-0.69, high >=0.70.
+- Missing signals are unavailable, never zero; use synthetic data only.
+- Official reporting references: 1930 and https://cybercrime.gov.in/.
 
-## Open Questions
+## Open Risks
 
-- Production owner: bank, payment app, or standalone companion.
-- Final thresholds/action policy require representative approved data.
-- Complaint evidence retention requires legal and organization review.
-- No verified genuine UPI bank transaction dataset is supplied; public data is
-  surrogate and must not be described as UPI ground truth.
-- Bank-side receiver graph access is unavailable to a standalone prototype.
-
-## Architecture Decisions
-
-- Planned client: Next.js with Inter through next/font, India-specific document language, and prototype-safe UPI Shield metadata.
-- Planned API: FastAPI and Pydantic.
-- Detectors remain independent and fuse through one versioned policy.
-- Initial models: transparent rules, Random Forest/XGBoost transaction model,
-  TF-IDF Logistic Regression text model, and NetworkX graph features.
-- Numeric/graph synthetic data will be code-generated; LLM use focuses on
-  multilingual text/scenario diversity.
-- Prototype performs no real payment or automatic external report.
-
-## Resume Notes
-
-- Source: UPI_Fraud_Shield_End_to_End_Study_Guide.pdf.
-- Weights: transaction 0.45, text 0.30, graph 0.25.
-- Thresholds: low below 0.40, medium 0.40-0.69, high 0.70 or higher.
-- Required demos: investment, refund QR, digital arrest, mule, recurring rent.
-- Reporting references: 1930 and https://cybercrime.gov.in/.
+- No verified genuine UPI dataset or standalone access to bank-wide graph data.
+- Production thresholds, ownership, and evidence retention remain unresolved.
+- `npm audit --omit=dev` (run on 2026-07-19) reports two moderate findings in Next.js 16.2.10's bundled PostCSS, as pinned in [package-lock.json](file:///c:/Users/samik/Desktop/UPI%20shield/upi_app/package-lock.json). Do not use the suggested forced downgrade to Next.js 9.3.3.
+- Coverage thresholds wait until domain logic exists; WebKit is not yet
+  validated.

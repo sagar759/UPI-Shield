@@ -1,39 +1,57 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# UPI Shield
 
-## Getting Started
+UPI Shield is a Next.js prototype for explainable pre-payment fraud warnings.
+It does not move real money or connect to banks, police, or government systems.
 
-First, run the development server:
+## Development
 
-```bash
+```powershell
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Quality Commands
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Install the Chromium runtime once before the first end-to-end run:
 
-## Learn More
+```powershell
+npx playwright install chromium
+```
 
-To learn more about Next.js, take a look at the following resources:
+| Command | Purpose |
+| --- | --- |
+| `npm run lint` | Run ESLint and Next.js rules. |
+| `npm run typecheck` | Run strict TypeScript checking without emitting files. |
+| `npm run test` | Run Vitest unit/component tests once in jsdom. |
+| `npm run test:watch` | Run Vitest in watch mode during development. |
+| `npm run test:coverage` | Run Vitest with V8 coverage output. |
+| `npm run build` | Create the optimized Next.js production build. |
+| `npm run test:e2e` | Run Playwright Chromium desktop and 360 px mobile checks. |
+| `npm run check` | Run lint, typecheck, unit tests, and build in sequence. |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Vitest does not require a running Next.js server. Playwright starts or reuses
+an isolated test server at `http://127.0.0.1:3100`; it does not reuse the
+normal development server on port 3000 and writes its Next.js output to
+`.next-playwright`.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Automated accessibility checks use axe in both the root component smoke test
+and the Playwright page smoke test. The jsdom component check excludes only the
+canvas-dependent color-contrast rule; the real Chromium page check evaluates
+contrast. Keyboard-only operation and 200 percent browser zoom remain manual
+acceptance checks.
 
-## Deploy on Vercel
+## Test Conventions
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-
-# UPI-Shield
-
+- Shared setup lives in `src/test/setup.ts`.
+- Deterministic time and pseudo-random helpers live in
+  `src/test/deterministic.ts`; tests opt in rather than changing runtime
+  behavior globally.
+- Reusable fixtures use
+  `src/test/fixtures/<domain>/<scenario>.fixture.ts` and export a readonly
+  `<scenario><Domain>Fixture` value.
+- Test data must be synthetic and must not contain real payment, identity, chat,
+  or complaint information.
+- Coverage thresholds are intentionally deferred until domain logic modules
+  exist. Static route wrappers are not a line-coverage target.
