@@ -2,7 +2,7 @@
 
 ## Status
 
-Phase 5 complete. Specifications 01-05 are implemented and verified. Continue with the next approved specification after `Specs-folder/05-policy-configuration-and-reason-catalog.md`.
+Phase 6 complete. Specifications 01-06 are implemented and verified. Continue with the next approved specification after `Specs-folder/06-formatting-masking-and-input-validation.md`.
 
 ## Implemented
 
@@ -26,11 +26,12 @@ Phase 5 complete. Specifications 01-05 are implemented and verified. Continue wi
     - **Receiver Flow (`RCV_*`)**: `RCV_UNIQUE_SENDERS_HIGH`, `RCV_UNIQUE_RECEIVERS_HIGH`, `RCV_INCOMING_VALUE_HIGH`, `RCV_OUTGOING_VALUE_HIGH`, `RCV_PASS_THROUGH_RATIO_HIGH`, `RCV_SHORT_HOLDING_TIME`, `RCV_BURST_RATIO_HIGH`, `RCV_NEW_ACCOUNT`.
     - **Missing/Degraded Signals (`SIG_*`)**: `SIG_TRANSACTION_UNAVAILABLE`, `SIG_TRANSACTION_DEGRADED`, `SIG_TEXT_UNAVAILABLE`, `SIG_TEXT_DEGRADED`, `SIG_GRAPH_UNAVAILABLE`, `SIG_GRAPH_DEGRADED`.
     - **Policy Outcome (`OUT_*`)**: `OUT_LOW_RISK`, `OUT_MEDIUM_RISK`, `OUT_HIGH_RISK`, `OUT_REVIEW_REQUIRED`.
+- Spec 06: Formatting, Masking, and Input Validation Utilities. Implemented Indian Rupee formatting (`en-IN` full and compact forms) and localized date/time formatting with explicit `Asia/Kolkata` timezone. Implemented privacy masking for VPAs, Indian mobile numbers, transaction references (UTR/RRN), and pseudonymous account IDs. Built robust input validation checking whitespace, control characters, invalid encodings, zero/negative amounts, impossible timestamps (bounds check), and forbidden secret-like credentials (PIN, OTP, CVV, passwords) in complaint fields. Provided secure export filename generation with character allowlist (`a-zA-Z0-9_.-`) and allowed extensions (`.json`, `.csv`, `.pdf`, `.txt`).
 - Quality commands and fixture naming are documented in `README.md`.
 
 ## Verified
 
-- `npm run check`: lint, typecheck, 49 unit tests in 4 files, and production build passed.
+- `npm run check`: lint, typecheck, 110 unit tests in 9 files, and production build passed.
 - `npm run test:coverage` passed.
 - `npm run test:e2e`: desktop and mobile smoke/accessibility tests passed.
 - `git diff --check` passed.
