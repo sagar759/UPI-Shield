@@ -1,0 +1,58 @@
+import { ReasonCode } from "../contracts/schemas";
+
+/**
+ * Stable, versioned reason codes for detectors, fusion, explanations, and audit logs.
+ * All reason codes must contain only uppercase letters, numbers, and underscores.
+ */
+export const REASON_CODES = {
+  // Transaction Behavior (TXN_*)
+  TXN_AMOUNT_RATIO_HIGH: "TXN_AMOUNT_RATIO_HIGH" as ReasonCode,
+  TXN_AMOUNT_ZSCORE_HIGH: "TXN_AMOUNT_ZSCORE_HIGH" as ReasonCode,
+  TXN_NEW_PAYEE: "TXN_NEW_PAYEE" as ReasonCode,
+  TXN_HOUR_DEVIATION: "TXN_HOUR_DEVIATION" as ReasonCode,
+  TXN_VELOCITY_HIGH: "TXN_VELOCITY_HIGH" as ReasonCode,
+  TXN_FAILURES_COUNT_HIGH: "TXN_FAILURES_COUNT_HIGH" as ReasonCode,
+  TXN_INACTIVITY_RESUME: "TXN_INACTIVITY_RESUME" as ReasonCode,
+  TXN_DEVICE_CHANGE: "TXN_DEVICE_CHANGE" as ReasonCode,
+  TXN_LOCATION_CHANGE: "TXN_LOCATION_CHANGE" as ReasonCode,
+  TXN_COLLECT_REQUEST: "TXN_COLLECT_REQUEST" as ReasonCode,
+  TXN_REFUND_CONTEXT: "TXN_REFUND_CONTEXT" as ReasonCode,
+  TXN_NAME_MISMATCH: "TXN_NAME_MISMATCH" as ReasonCode,
+
+  // Scam Tactic (SCAM_*)
+  SCAM_URGENCY: "SCAM_URGENCY" as ReasonCode,
+  SCAM_AUTHORITY: "SCAM_AUTHORITY" as ReasonCode,
+  SCAM_THREAT: "SCAM_THREAT" as ReasonCode,
+  SCAM_SECRECY: "SCAM_SECRECY" as ReasonCode,
+  SCAM_INVESTMENT: "SCAM_INVESTMENT" as ReasonCode,
+  SCAM_REFUND_QR: "SCAM_REFUND_QR" as ReasonCode,
+  SCAM_CREDENTIALS: "SCAM_CREDENTIALS" as ReasonCode,
+  SCAM_REMOTE_ACCESS: "SCAM_REMOTE_ACCESS" as ReasonCode,
+  SCAM_RECOVERY_FEE: "SCAM_RECOVERY_FEE" as ReasonCode,
+
+  // Receiver Flow (RCV_*)
+  RCV_UNIQUE_SENDERS_HIGH: "RCV_UNIQUE_SENDERS_HIGH" as ReasonCode,
+  RCV_UNIQUE_RECEIVERS_HIGH: "RCV_UNIQUE_RECEIVERS_HIGH" as ReasonCode,
+  RCV_INCOMING_VALUE_HIGH: "RCV_INCOMING_VALUE_HIGH" as ReasonCode,
+  RCV_OUTGOING_VALUE_HIGH: "RCV_OUTGOING_VALUE_HIGH" as ReasonCode,
+  RCV_PASS_THROUGH_RATIO_HIGH: "RCV_PASS_THROUGH_RATIO_HIGH" as ReasonCode,
+  RCV_SHORT_HOLDING_TIME: "RCV_SHORT_HOLDING_TIME" as ReasonCode,
+  RCV_BURST_RATIO_HIGH: "RCV_BURST_RATIO_HIGH" as ReasonCode,
+  RCV_NEW_ACCOUNT: "RCV_NEW_ACCOUNT" as ReasonCode,
+
+  // Missing/Degraded Signals (SIG_*)
+  SIG_TRANSACTION_UNAVAILABLE: "SIG_TRANSACTION_UNAVAILABLE" as ReasonCode,
+  SIG_TRANSACTION_DEGRADED: "SIG_TRANSACTION_DEGRADED" as ReasonCode,
+  SIG_TEXT_UNAVAILABLE: "SIG_TEXT_UNAVAILABLE" as ReasonCode,
+  SIG_TEXT_DEGRADED: "SIG_TEXT_DEGRADED" as ReasonCode,
+  SIG_GRAPH_UNAVAILABLE: "SIG_GRAPH_UNAVAILABLE" as ReasonCode,
+  SIG_GRAPH_DEGRADED: "SIG_GRAPH_DEGRADED" as ReasonCode,
+
+  // Policy Outcome (OUT_*)
+  OUT_LOW_RISK: "OUT_LOW_RISK" as ReasonCode,
+  OUT_MEDIUM_RISK: "OUT_MEDIUM_RISK" as ReasonCode,
+  OUT_HIGH_RISK: "OUT_HIGH_RISK" as ReasonCode,
+  OUT_REVIEW_REQUIRED: "OUT_REVIEW_REQUIRED" as ReasonCode,
+} as const;
+
+export type StableReasonCode = typeof REASON_CODES[keyof typeof REASON_CODES];
