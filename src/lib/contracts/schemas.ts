@@ -316,6 +316,7 @@ export const DecisionAuditRecordSchema = z.object({
   storageVersion: z.literal(STORAGE_VERSION),
   recordedAt: IsoTimestampSchema,
   actions: z.array(UserActionSchema),
+  isSeeded: z.boolean().optional(),
 });
 
 export const EvidenceTypeSchema = z.enum([

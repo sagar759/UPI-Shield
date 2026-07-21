@@ -2,7 +2,7 @@
 
 ## Status
 
-Phase 7 complete. Specifications 01-07 are implemented and verified. Continue with the next approved specification after `Specs-folder/07-demo-data-and-scenario-catalog.md`.
+Phase 8 complete. Specifications 01-08 are implemented and verified. Continue with the next approved specification after `Specs-folder/08-local-persistence-and-audit-repository.md`.
 
 ## Implemented
 
@@ -33,14 +33,21 @@ Phase 7 complete. Specifications 01-07 are implemented and verified. Continue wi
   - Hard Legitimate Cases (6): `scenario-first-verified-merchant`, `scenario-emergency-hospital-payment`, `scenario-travel-device-change`, `scenario-high-fan-in-merchant`, `scenario-benign-bank-warning`, `scenario-recurring-high-value-rent`.
   - Synthetic Data Catalog: Local primary user profile (`DEMO_PRIMARY_PROFILE`), counterparty profiles (`DEMO_COUNTERPARTY_PROFILES`), contact list (`DEMO_CONTACTS`), recent activity seed data (`DEMO_RECENT_ACTIVITY`), receiver point-in-time aggregate snapshots (`DEMO_RECEIVER_SNAPSHOTS`), and separate ground-truth regression expectations manifest (`REGRESSION_EXPECTATIONS`).
   - Wording Assumptions & Provenance: Scam texts cover English, Hindi transliteration (Hinglish), and Hindi using obvious synthetic placeholders (`TEST_VPA_*`, `example.invalid`, `+91 98*** ***00`). Comprehensive fixture validation tests verify Zod runtime schema parsing, referential integrity, ID uniqueness, absence of secret credentials (PIN/OTP/CVV/passwords), separation of expected labels from production inputs, hard legitimate detector challenges, and 100% deterministic reproducibility.
+- Spec 08: Local Persistence and Audit Repository. Implemented framework-independent `IDecisionRepository` with server-safe `MemoryDecisionRepository` and client `BrowserDecisionRepository` adapters.
+  - Storage Schema Version: `decision-storage/v1` stored under namespaced key `upi_shield_audit_store_v1`.
+  - Retained Fields: Masked/synthetic inputs, detector results, final risk decision, policy versions, latency, and explicit user actions (`cancel`, `verify`, `continue`, `override`, `report`, `copy_draft`, `export_draft`). Raw message text retention defaults off and is never persisted without explicit consent.
+  - Audit Immutability: Appending user actions modifies strictly the `actions` array while leaving detector scores, timestamps, and policy versions unchanged.
+  - Defensive Handling & Quarantining: Defensive JSON parsing with Zod runtime validation. Corrupted payloads or invalid records are quarantined without crashing runtime execution.
+  - Degraded Storage Health: Storage quota exhaustion (`degraded_quota`), corrupted storage (`degraded_corrupt`), and unavailable storage (`degraded_unavailable`) are tracked as explicit health states (`StorageHealth`).
+- Spec 08 follow-ups: Updated action metadata sanitizer in `src/lib/storage/storage-schema.ts` to recursively purge sensitive keys from nested objects and arrays when `consentGiven` is false. Updated `BrowserDecisionRepository` `getHealth` read-only test in `src/test/storage.test.ts` to spy on `Storage.prototype.setItem` post-save and assert zero write operations during health checks.
 - Quality commands and fixture naming are documented in `README.md`.
 
 ## Verified
 
-- `npm run check`: lint, typecheck, 127 unit tests in 10 files, and production build passed.
-- `npm run test:coverage` passed.
+- `npm run check`: lint, typecheck, 150 unit tests in 11 files, and production build passed.
+- `npm run test:coverage`: passed with 90.4% line coverage.
 - `npm run test:e2e`: desktop and mobile smoke/accessibility tests passed.
-- `git diff --check` passed.
+- `git diff --check`: passed.
 
 ## Current UI
 
