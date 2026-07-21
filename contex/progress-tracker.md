@@ -2,7 +2,7 @@
 
 ## Status
 
-Phase 6 complete. Specifications 01-06 are implemented and verified. Continue with the next approved specification after `Specs-folder/06-formatting-masking-and-input-validation.md`.
+Phase 7 complete. Specifications 01-07 are implemented and verified. Continue with the next approved specification after `Specs-folder/07-demo-data-and-scenario-catalog.md`.
 
 ## Implemented
 
@@ -27,11 +27,17 @@ Phase 6 complete. Specifications 01-06 are implemented and verified. Continue wi
     - **Missing/Degraded Signals (`SIG_*`)**: `SIG_TRANSACTION_UNAVAILABLE`, `SIG_TRANSACTION_DEGRADED`, `SIG_TEXT_UNAVAILABLE`, `SIG_TEXT_DEGRADED`, `SIG_GRAPH_UNAVAILABLE`, `SIG_GRAPH_DEGRADED`.
     - **Policy Outcome (`OUT_*`)**: `OUT_LOW_RISK`, `OUT_MEDIUM_RISK`, `OUT_HIGH_RISK`, `OUT_REVIEW_REQUIRED`.
 - Spec 06: Formatting, Masking, and Input Validation Utilities. Implemented Indian Rupee formatting (`en-IN` full and compact forms) and localized date/time formatting with explicit `Asia/Kolkata` timezone. Implemented privacy masking for VPAs, Indian mobile numbers, transaction references (UTR/RRN), and pseudonymous account IDs. Built robust input validation checking whitespace, control characters, invalid encodings, zero/negative amounts, impossible timestamps (bounds check), and forbidden secret-like credentials (PIN, OTP, CVV, passwords) in complaint fields. Provided secure export filename generation with character allowlist (`a-zA-Z0-9_.-`) and allowed extensions (`.json`, `.csv`, `.pdf`, `.txt`).
+- Spec 07: Demo Data and Scenario Catalog. Created deterministic, typed, 100% synthetic fixtures supporting UI and E2E demonstrations without embedding scoring labels in production model input objects.
+  - Fixture version: `demo-fixtures/v1`
+  - Presentation Scenarios (5): `scenario-student-investment`, `scenario-refund-qr`, `scenario-digital-arrest`, `scenario-mule-receiver`, `scenario-recurring-rent`.
+  - Hard Legitimate Cases (6): `scenario-first-verified-merchant`, `scenario-emergency-hospital-payment`, `scenario-travel-device-change`, `scenario-high-fan-in-merchant`, `scenario-benign-bank-warning`, `scenario-recurring-high-value-rent`.
+  - Synthetic Data Catalog: Local primary user profile (`DEMO_PRIMARY_PROFILE`), counterparty profiles (`DEMO_COUNTERPARTY_PROFILES`), contact list (`DEMO_CONTACTS`), recent activity seed data (`DEMO_RECENT_ACTIVITY`), receiver point-in-time aggregate snapshots (`DEMO_RECEIVER_SNAPSHOTS`), and separate ground-truth regression expectations manifest (`REGRESSION_EXPECTATIONS`).
+  - Wording Assumptions & Provenance: Scam texts cover English, Hindi transliteration (Hinglish), and Hindi using obvious synthetic placeholders (`TEST_VPA_*`, `example.invalid`, `+91 98*** ***00`). Comprehensive fixture validation tests verify Zod runtime schema parsing, referential integrity, ID uniqueness, absence of secret credentials (PIN/OTP/CVV/passwords), separation of expected labels from production inputs, hard legitimate detector challenges, and 100% deterministic reproducibility.
 - Quality commands and fixture naming are documented in `README.md`.
 
 ## Verified
 
-- `npm run check`: lint, typecheck, 110 unit tests in 9 files, and production build passed.
+- `npm run check`: lint, typecheck, 127 unit tests in 10 files, and production build passed.
 - `npm run test:coverage` passed.
 - `npm run test:e2e`: desktop and mobile smoke/accessibility tests passed.
 - `git diff --check` passed.
