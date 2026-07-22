@@ -58,7 +58,13 @@ test("navigates to all route structure paths and checks WCAG compliance", async 
   await expect(page).toHaveURL(/\/activity$/);
   await expect(page.getByRole("heading", { name: "Decision History" })).toBeVisible();
 
-  // 4. Click Help navigation link
+  // 4. Test nested route active state on /activity/dec_test123
+  await page.goto("/activity/dec_test123");
+  await expect(page.getByRole("heading", { name: "Decision Detail" })).toBeVisible();
+  const activeActivityLink = page.locator(`${navSelector} >> role=link[name="Activity"]`);
+  await expect(activeActivityLink).toHaveAttribute("aria-current", "page");
+
+  // 5. Click Help navigation link
   await page.locator(`${navSelector} >> text=Help`).click();
   await expect(page).toHaveURL(/\/help$/);
   await expect(page.getByRole("heading", { name: "Help & Resources" })).toBeVisible();

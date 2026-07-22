@@ -2,7 +2,7 @@
 
 ## Status
 
-Phase 9 complete. Specification 09 (App Shell and Route Structure) is implemented and verified. Continue with the next approved specification after `Specs-folder/09-app-shell-and-route-structure.md`.
+Phase 10 complete. Specification 10 (Responsive Navigation) is implemented and verified. Continue with the next approved specification after `Specs-folder/10-responsive-navigation.md`.
 
 ## Implemented
 
@@ -41,18 +41,19 @@ Phase 9 complete. Specification 09 (App Shell and Route Structure) is implemente
   - Degraded Storage Health: Storage quota exhaustion (`degraded_quota`), corrupted storage (`degraded_corrupt`), and unavailable storage (`degraded_unavailable`) are tracked as explicit health states (`StorageHealth`).
 - Spec 08 follow-ups: Updated action metadata sanitizer in `src/lib/storage/storage-schema.ts` to recursively purge sensitive keys from nested objects and arrays when `consentGiven` is false. Updated `BrowserDecisionRepository` `getHealth` read-only test in `src/test/storage.test.ts` to spy on `Storage.prototype.setItem` post-save and assert zero write operations during health checks.
 - Spec 09: App Shell and Route Structure. Created semantic route skeleton (`/`, `/analyze`, `/activity`, `/activity/[decisionId]`, and `/help`) and persistent layout frame. Developed interactive `NavLinks` client component with responsive support for desktop sidebar (236px fixed width) and mobile top bar / bottom navigation. Added quiet persistent prototype disclosure (WCAG AA compliant color contrast) and keyboard-accessible skip-to-content routing. Implemented custom 404 (`not-found.tsx`), loading spinner (`loading.tsx`), and error boundary (`error.tsx`) components.
+- Spec 10: Responsive Navigation. Implemented dedicated responsive navigation components: single typed configuration `nav-config.ts`, brand mark component `BrandMark`, 236px desktop navigation sidebar `DesktopSidebar`, mobile top bar `MobileTopBar`, and 4-column fixed mobile bottom navigation `MobileBottomNav`. Active route determination relies on Next.js `usePathname` and `isNavActive` helper, correctly highlighting active items on exact routes and nested subpaths (`/activity/[decisionId]`, `/analyze/*`). Active state visual design combines icon, label, text color, font weight, background shape/pill, and indicator border for clear non-color-only identification. Mobile touch targets maintain 44x44px min sizing, label overflow prevention at 320-360px viewports, visible focus rings, and safe-area content bottom padding clearance (`pb-[68px] min-[900px]:pb-0`).
 - Quality commands and fixture naming are documented in `README.md`.
 
 ## Verified
 
-- `npm run check`: lint, typecheck, 158 unit tests in 11 files, and production build passed.
-- `npm run test:coverage`: passed with 90.4% line coverage.
-- `npm run test:e2e`: desktop and mobile E2E route navigation, skip-links, disclosures, and accessibility tests passed.
+- `npm run check`: lint, typecheck, 166 unit tests in 12 files, and production build passed.
+- `npm run test:coverage`: passed with 91.3% line coverage (100% coverage on brand & navigation components).
+- `npm run test:e2e`: desktop (1440x900) and mobile (360x800) E2E route navigation, nested subpath active states, skip-links, disclosures, and WCAG AA accessibility tests passed.
 - `git diff --check`: passed.
 
 ## Current UI
 
-- The app shell is fully implemented, showing the responsive navigation sidebar on desktop, mobile top-header and bottom navigation bar, with placeholder content routes `/`, `/analyze`, `/activity`, `/activity/[decisionId]`, and `/help` functioning.
+- Responsive desktop sidebar (236px width), mobile header top-bar, and 4-column fixed bottom navigation bar are fully functional with active state subpath highlighting across `/`, `/analyze`, `/activity`, `/activity/[decisionId]`, and `/help`.
 - Navbar/sidebar/dialog primitives exist but are not mounted into an editor page. No editor canvas, product screens, detectors, datasets, API, or models are implemented yet.
 
 ## Next Work

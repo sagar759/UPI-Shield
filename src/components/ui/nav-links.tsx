@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Search, Activity, HelpCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { NAV_ITEMS, isNavActive } from "@/components/navigation/nav-config";
 
 interface NavLinksProps {
   className?: string;
@@ -13,20 +13,6 @@ interface NavLinksProps {
 export function NavLinks({ className, mobile = false }: NavLinksProps) {
   const pathname = usePathname();
 
-  const links = [
-    { href: "/", label: "Home", icon: Home },
-    { href: "/analyze", label: "Analyze", icon: Search },
-    { href: "/activity", label: "Activity", icon: Activity },
-    { href: "/help", label: "Help", icon: HelpCircle },
-  ];
-
-  const isActive = (href: string) => {
-    if (href === "/") {
-      return pathname === "/";
-    }
-    return pathname.startsWith(href);
-  };
-
   return (
     <nav
       className={cn(
@@ -35,19 +21,19 @@ export function NavLinks({ className, mobile = false }: NavLinksProps) {
       )}
       aria-label={mobile ? "Mobile navigation" : "Desktop navigation"}
     >
-      {links.map((link) => {
-        const active = isActive(link.href);
-        const Icon = link.icon;
+      {NAV_ITEMS.map((item) => {
+        const active = isNavActive(pathname, item.href);
+        const Icon = item.icon;
 
         return (
           <Link
-            key={link.href}
-            href={link.href}
+            key={item.href}
+            href={item.href}
             aria-current={active ? "page" : undefined}
             className={cn(
               "flex items-center gap-3 rounded-control text-body-sm font-ui-semibold transition-colors duration-fast ease-standard focus-visible:outline-focus",
               active
-                ? "bg-surface-subtle text-action-hover"
+                ? "bg-surface-subtle text-action-hover font-ui-bold"
                 : "text-fg-secondary hover:bg-surface-subtle hover:text-fg-primary",
               mobile
                 ? "flex-col gap-1 px-3 py-1 min-w-[72px] min-h-[44px] justify-center items-center text-[10px]"
@@ -63,7 +49,7 @@ export function NavLinks({ className, mobile = false }: NavLinksProps) {
               aria-hidden="true"
             />
             <span className={cn(mobile ? "text-[11px] leading-tight" : "text-body-sm")}>
-              {link.label}
+              {item.label}
             </span>
           </Link>
         );
