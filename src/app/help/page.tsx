@@ -1,17 +1,17 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Home",
+  title: "Help & Resources",
 };
 
-export default function Home() {
+export default function HelpPage() {
   return (
     <div className="p-page-gutter max-w-content-max mx-auto">
       <h1 className="text-page-title font-ui-bold text-fg-primary mb-4">
-        UPI Shield Home
+        Help & Resources
       </h1>
       <p className="text-body text-fg-secondary">
-        Welcome to UPI Shield, an AI-assisted fraud-prevention layer for Indian digital payments.
+        Official guides, reporting checklists, and references for cyber-crime reporting.
       </p>
     </div>
   );

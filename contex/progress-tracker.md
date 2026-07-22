@@ -2,7 +2,7 @@
 
 ## Status
 
-Phase 8 complete. Specifications 01-08 are implemented and verified. Continue with the next approved specification after `Specs-folder/08-local-persistence-and-audit-repository.md`.
+Phase 9 complete. Specification 09 (App Shell and Route Structure) is implemented and verified. Continue with the next approved specification after `Specs-folder/09-app-shell-and-route-structure.md`.
 
 ## Implemented
 
@@ -40,21 +40,20 @@ Phase 8 complete. Specifications 01-08 are implemented and verified. Continue wi
   - Defensive Handling & Quarantining: Defensive JSON parsing with Zod runtime validation. Corrupted payloads or invalid records are quarantined without crashing runtime execution.
   - Degraded Storage Health: Storage quota exhaustion (`degraded_quota`), corrupted storage (`degraded_corrupt`), and unavailable storage (`degraded_unavailable`) are tracked as explicit health states (`StorageHealth`).
 - Spec 08 follow-ups: Updated action metadata sanitizer in `src/lib/storage/storage-schema.ts` to recursively purge sensitive keys from nested objects and arrays when `consentGiven` is false. Updated `BrowserDecisionRepository` `getHealth` read-only test in `src/test/storage.test.ts` to spy on `Storage.prototype.setItem` post-save and assert zero write operations during health checks.
+- Spec 09: App Shell and Route Structure. Created semantic route skeleton (`/`, `/analyze`, `/activity`, `/activity/[decisionId]`, and `/help`) and persistent layout frame. Developed interactive `NavLinks` client component with responsive support for desktop sidebar (236px fixed width) and mobile top bar / bottom navigation. Added quiet persistent prototype disclosure (WCAG AA compliant color contrast) and keyboard-accessible skip-to-content routing. Implemented custom 404 (`not-found.tsx`), loading spinner (`loading.tsx`), and error boundary (`error.tsx`) components.
 - Quality commands and fixture naming are documented in `README.md`.
 
 ## Verified
 
-- `npm run check`: lint, typecheck, 150 unit tests in 11 files, and production build passed.
+- `npm run check`: lint, typecheck, 158 unit tests in 11 files, and production build passed.
 - `npm run test:coverage`: passed with 90.4% line coverage.
-- `npm run test:e2e`: desktop and mobile smoke/accessibility tests passed.
+- `npm run test:e2e`: desktop and mobile E2E route navigation, skip-links, disclosures, and accessibility tests passed.
 - `git diff --check`: passed.
 
 ## Current UI
 
-- The root route still shows only the `UPI Fraud Shield` placeholder.
-- Navbar/sidebar/dialog primitives exist but are not mounted into an editor
-  page. No editor canvas, product screens, detectors, datasets, API, or models
-  are implemented yet.
+- The app shell is fully implemented, showing the responsive navigation sidebar on desktop, mobile top-header and bottom navigation bar, with placeholder content routes `/`, `/analyze`, `/activity`, `/activity/[decisionId]`, and `/help` functioning.
+- Navbar/sidebar/dialog primitives exist but are not mounted into an editor page. No editor canvas, product screens, detectors, datasets, API, or models are implemented yet.
 
 ## Next Work
 
