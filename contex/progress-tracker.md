@@ -2,7 +2,7 @@
 
 ## Status
 
-Phase 10 complete. Specification 10 (Responsive Navigation) is implemented and verified. Continue with the next approved specification after `Specs-folder/10-responsive-navigation.md`.
+Phase 11 complete. Specification 11 (Shared UI and Form Primitives) is implemented and verified. Continue with the next approved specification after `Specs-folder/11-shared-ui-and-form-primitives.md`.
 
 ## Implemented
 
@@ -42,19 +42,27 @@ Phase 10 complete. Specification 10 (Responsive Navigation) is implemented and v
 - Spec 08 follow-ups: Updated action metadata sanitizer in `src/lib/storage/storage-schema.ts` to recursively purge sensitive keys from nested objects and arrays when `consentGiven` is false. Updated `BrowserDecisionRepository` `getHealth` read-only test in `src/test/storage.test.ts` to spy on `Storage.prototype.setItem` post-save and assert zero write operations during health checks.
 - Spec 09: App Shell and Route Structure. Created semantic route skeleton (`/`, `/analyze`, `/activity`, `/activity/[decisionId]`, and `/help`) and persistent layout frame. Developed interactive `NavLinks` client component with responsive support for desktop sidebar (236px fixed width) and mobile top bar / bottom navigation. Added quiet persistent prototype disclosure (WCAG AA compliant color contrast) and keyboard-accessible skip-to-content routing. Implemented custom 404 (`not-found.tsx`), loading spinner (`loading.tsx`), and error boundary (`error.tsx`) components.
 - Spec 10: Responsive Navigation. Implemented dedicated responsive navigation components: single typed configuration `nav-config.ts`, brand mark component `BrandMark`, 236px desktop navigation sidebar `DesktopSidebar`, mobile top bar `MobileTopBar`, and 4-column fixed mobile bottom navigation `MobileBottomNav`. Active route determination relies on Next.js `usePathname` and `isNavActive` helper, correctly highlighting active items on exact routes and nested subpaths (`/activity/[decisionId]`, `/analyze/*`). Active state visual design combines icon, label, text color, font weight, background shape/pill, and indicator border for clear non-color-only identification. Mobile touch targets maintain 44x44px min sizing, label overflow prevention at 320-360px viewports, visible focus rings, and safe-area content bottom padding clearance (`pb-[68px] min-[900px]:pb-0`).
+- Spec 11: Shared UI and Form Primitives. Built 16 accessible, semantic UI components (`Button`, `IconButton`, `TextLink`, `TextField`, `AmountField`, `TextArea`, `Select`, `Checkbox`, `RadioGroup`, `SegmentedControl`, `FieldMessage`, `ErrorSummary`, `Panel`, `Divider`, `StatusBadge`, and `ProgressBar`) and small typed class-names helper (`src/lib/ui/class-names.ts`).
+  - Supported Variants & Accessibility Handoff:
+    - `Button` & `IconButton`: `primary`, `secondary`, `quiet`, `danger` variants; `sm`, `md`, `lg` sizes; `isLoading` spinner state with `aria-busy` preventing duplicate activation; 44x44px min target size; `IconButton` enforces accessible `label` / `aria-label` and `title` tooltip.
+    - `TextLink`: `primary`, `quiet`, `danger` variants; external link indicator (`target="_blank" rel="noopener noreferrer"`); `disabled` state handling (`aria-disabled`).
+    - `TextField`, `AmountField`, `TextArea`, `Select`, `Checkbox`, `RadioGroup`: Enforce visible labels (`htmlFor`/`legend`), optional required indicators (`*`), helper descriptions, error association via `aria-describedby` & `aria-invalid`, 44px min input height (`h-11`); `AmountField` includes non-interactive `₹` prefix and tabular numerals (`font-mono tabular-nums`).
+    - `SegmentedControl`: Real buttons/radios in a `radiogroup` with full keyboard arrow navigation (Left/Right/Up/Down), active `aria-checked` state, and flexible grid layout avoiding horizontal overflow on 320px-360px mobile viewports.
+    - `Panel` & `Divider`: `Panel` supports semantic `as` tags (`div`, `section`, `article`, `aside`) with 0-8px radius and semantic surface variants (`default`, `subtle`, `bordered`, `danger`, `warning`, `success`); `Divider` supports horizontal `<hr>` and vertical separators with optional centered text labels.
+    - `StatusBadge` & `ProgressBar`: `StatusBadge` pairs visible text with decorative Lucide icons (never color alone) across `low`, `medium`, `high`, `unavailable`, `success`, `warning`, `danger`, `neutral` variants; `ProgressBar` provides native `role="progressbar"`, `aria-valuenow`, `aria-valuemin={0}`, `aria-valuemax={100}`, `aria-valuetext`, and visible percentage text.
 - Quality commands and fixture naming are documented in `README.md`.
 
 ## Verified
 
-- `npm run check`: lint, typecheck, 166 unit tests in 12 files, and production build passed.
-- `npm run test:coverage`: passed with 91.3% line coverage (100% coverage on brand & navigation components).
-- `npm run test:e2e`: desktop (1440x900) and mobile (360x800) E2E route navigation, nested subpath active states, skip-links, disclosures, and WCAG AA accessibility tests passed.
+- `npm run check`: lint (eslint), typecheck (tsc), 194 unit tests in 13 files, and production build (`next build`) passed.
+- `npm run test:coverage`: passed with high coverage across domain and UI primitives.
 - `git diff --check`: passed.
 
 ## Current UI
 
 - Responsive desktop sidebar (236px width), mobile header top-bar, and 4-column fixed bottom navigation bar are fully functional with active state subpath highlighting across `/`, `/analyze`, `/activity`, `/activity/[decisionId]`, and `/help`.
-- Navbar/sidebar/dialog primitives exist but are not mounted into an editor page. No editor canvas, product screens, detectors, datasets, API, or models are implemented yet.
+- Accessible shared UI and form primitives (`Button`, `IconButton`, `TextLink`, `TextField`, `AmountField`, `TextArea`, `Select`, `Checkbox`, `RadioGroup`, `SegmentedControl`, `FieldMessage`, `ErrorSummary`, `Panel`, `Divider`, `StatusBadge`, `ProgressBar`) are fully implemented and verified.
+- No editor canvas, product screens, detectors, datasets, API, or models are mounted yet.
 
 ## Next Work
 
