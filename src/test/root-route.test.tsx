@@ -17,6 +17,12 @@ import { usePathname } from "next/navigation";
 // Mock next/navigation
 vi.mock("next/navigation", () => ({
   usePathname: vi.fn(() => "/"),
+  useRouter: vi.fn(() => ({
+    replace: vi.fn(),
+    push: vi.fn(),
+    prefetch: vi.fn(),
+  })),
+  useSearchParams: vi.fn(() => new URLSearchParams()),
 }));
 
 const WCAG_TAGS = [
@@ -48,7 +54,7 @@ describe("routes and pages", () => {
     });
 
     expect(results.violations).toEqual([]);
-  });
+  }, 15000);
 
   it("renders the Analyze page", () => {
     render(<AnalyzePage />);

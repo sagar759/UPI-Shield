@@ -2,11 +2,13 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { Zap, Users, ArrowUpRight } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { DEMO_PRIMARY_PROFILE } from "@/data/demo/profiles";
 import { ProtectionSummary } from "./protection-summary";
 import { RecentActivityPreview } from "./recent-activity-preview";
 import { SafetyTip } from "./safety-tip";
+import { PaymentActions } from "./payment-actions";
+import { PeopleRow } from "./people-row";
 import { cn } from "@/lib/utils";
 
 export type HomeDashboardProps = React.ComponentProps<"div">;
@@ -48,57 +50,11 @@ export function HomeDashboard({ className, ...props }: HomeDashboardProps) {
       <div className="flex flex-col min-[900px]:flex-row gap-6 items-start">
         {/* Primary Payment & Activity Column */}
         <div className="flex-1 min-w-0 w-full flex flex-col gap-6">
-          {/* Reserved Slot: Quick Payment Actions */}
-          <section
-            aria-labelledby="payment-actions-slot-heading"
-            className="p-5 rounded-panel border border-border bg-surface shadow-subtle flex flex-col gap-3"
-          >
-            <div className="flex items-center gap-2">
-              <div className="p-1.5 rounded-control bg-surface-subtle text-fg-secondary shrink-0">
-                <Zap className="size-icon-sm" aria-hidden="true" />
-              </div>
-              <h2
-                id="payment-actions-slot-heading"
-                className="text-panel-title font-ui-semibold text-fg-primary"
-              >
-                Quick Payment Actions
-              </h2>
-            </div>
-            <div className="p-4 rounded-control border border-dashed border-border bg-surface-subtle/50 flex flex-col items-center justify-center text-center gap-1">
-              <span className="text-body-sm font-ui-medium text-fg-secondary">
-                Payment Actions Slot (Spec 15)
-              </span>
-              <span className="text-caption text-fg-muted">
-                Scan & pay, Pay contact, Bank transfer, and Check UPI ID shortcuts will mount here.
-              </span>
-            </div>
-          </section>
+          {/* Quick Payment Actions */}
+          <PaymentActions />
 
-          {/* Reserved Slot: People & Contacts */}
-          <section
-            aria-labelledby="people-slot-heading"
-            className="p-5 rounded-panel border border-border bg-surface shadow-subtle flex flex-col gap-3"
-          >
-            <div className="flex items-center gap-2">
-              <div className="p-1.5 rounded-control bg-surface-subtle text-fg-secondary shrink-0">
-                <Users className="size-icon-sm" aria-hidden="true" />
-              </div>
-              <h2
-                id="people-slot-heading"
-                className="text-panel-title font-ui-semibold text-fg-primary"
-              >
-                People & Recent Contacts
-              </h2>
-            </div>
-            <div className="p-4 rounded-control border border-dashed border-border bg-surface-subtle/50 flex flex-col items-center justify-center text-center gap-1">
-              <span className="text-body-sm font-ui-medium text-fg-secondary">
-                People Shortcuts Slot (Spec 15)
-              </span>
-              <span className="text-caption text-fg-muted">
-                Frequent contacts and quick transaction triggers will mount here.
-              </span>
-            </div>
-          </section>
+          {/* People & Recent Contacts */}
+          <PeopleRow />
 
           {/* Recent Activity Section */}
           <RecentActivityPreview />

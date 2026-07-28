@@ -204,11 +204,11 @@ describe("Home Dashboard Components", () => {
       // Greeting profile check
       expect(screen.getByText(/Aarav Sharma/i)).toBeVisible();
 
-      // Reserved slot headings check
+      // Payment Actions & People sections check
       expect(screen.getByRole("heading", { name: "Quick Payment Actions" })).toBeVisible();
       expect(screen.getByRole("heading", { name: "People & Recent Contacts" })).toBeVisible();
-      expect(screen.getByText(/Payment Actions Slot \(Spec 15\)/i)).toBeVisible();
-      expect(screen.getByText(/People Shortcuts Slot \(Spec 15\)/i)).toBeVisible();
+      expect(screen.getByRole("link", { name: /Scan & pay/i })).toBeVisible();
+      expect(screen.getByRole("link", { name: /Ramesh Verma/i })).toBeVisible();
 
       // Protection Summary & Safety Tip check
       expect(screen.getByRole("heading", { name: "Protection Status" })).toBeVisible();

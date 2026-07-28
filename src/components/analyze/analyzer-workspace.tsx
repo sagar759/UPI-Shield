@@ -1,0 +1,326 @@
+"use client";
+
+import * as React from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { AnalyzerModeControl } from "@/components/analyze/analyzer-mode-control";
+import {
+  AnalyzerResultRegion,
+  type ResultState,
+} from "@/components/analyze/analyzer-result-region";
+import { Panel } from "@/components/ui/panel";
+import { TextField } from "@/components/ui/text-field";
+import { AmountField } from "@/components/ui/amount-field";
+import { TextArea } from "@/components/ui/text-area";
+import { Button } from "@/components/ui/button";
+import {
+  parseAnalyzeSearchParams,
+  buildAnalyzeSearchUrl,
+  type AnalyzerMode,
+  type ParsedAnalyzeSearchState,
+} from "@/lib/navigation/analyze-search-state";
+
+export interface TransactionDraft {
+  amount: string;
+  recipientVpa: string;
+  note: string;
+  contactId?: string;
+}
+
+export interface MessageDraft {
+  rawMessage: string;
+  sender: string;
+}
+
+export interface ReceiverDraft {
+  receiverVpa: string;
+  timeWindow: string;
+}
+
+export interface FormSlotProps<T> {
+  draft: T;
+  onChange: (updates: Partial<T>) => void;
+  onSubmit: () => void;
+}
+
+export interface AnalyzerWorkspaceProps {
+  initialState?: ParsedAnalyzeSearchState;
+  renderTransactionForm?: (props: FormSlotProps<TransactionDraft>) => React.ReactNode;
+  renderMessageForm?: (props: FormSlotProps<MessageDraft>) => React.ReactNode;
+  renderReceiverForm?: (props: FormSlotProps<ReceiverDraft>) => React.ReactNode;
+  renderResultRegion?: (props: { mode: AnalyzerMode; state: ResultState }) => React.ReactNode;
+}
+
+export function AnalyzerWorkspace({
+  initialState,
+  renderTransactionForm,
+  renderMessageForm,
+  renderReceiverForm,
+  renderResultRegion,
+}: AnalyzerWorkspaceProps) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  // Parse URL search parameters safely
+  const currentSearchState = React.useMemo(() => {
+    if (searchParams && searchParams.size > 0) {
+      return parseAnalyzeSearchParams(searchParams);
+    }
+    return initialState || parseAnalyzeSearchParams(null);
+  }, [searchParams, initialState]);
+
+  const [activeMode, setActiveMode] = React.useState<AnalyzerMode>(
+    currentSearchState.mode
+  );
+  const [resultState, setResultState] = React.useState<ResultState>("idle");
+
+  // Ref for accessibility focus management on mode switch
+  const inputHeadingRef = React.useRef<HTMLHeadingElement>(null);
+
+  // Independent in-memory draft states per mode
+  const [transactionDraft, setTransactionDraft] = React.useState<TransactionDraft>(
+    () => ({
+      amount: "",
+      recipientVpa:
+        currentSearchState.resolvedContact?.vpa ||
+        currentSearchState.resolvedContact?.displayName ||
+        "",
+      note: "",
+      contactId: currentSearchState.contactId,
+    })
+  );
+
+  const [messageDraft, setMessageDraft] = React.useState<MessageDraft>({
+    rawMessage: "",
+    sender: "",
+  });
+
+  const [receiverDraft, setReceiverDraft] = React.useState<ReceiverDraft>({
+    receiverVpa: "",
+    timeWindow: "24h",
+  });
+
+  // Adjust activeMode state during render when URL search mode changes
+  const [prevMode, setPrevMode] = React.useState(currentSearchState.mode);
+  if (prevMode !== currentSearchState.mode) {
+    setPrevMode(currentSearchState.mode);
+    setActiveMode(currentSearchState.mode);
+  }
+
+  // Adjust transactionDraft state during render when URL search contactId changes
+  const [prevContactId, setPrevContactId] = React.useState(currentSearchState.contactId);
+  if (prevContactId !== currentSearchState.contactId) {
+    setPrevContactId(currentSearchState.contactId);
+    const newVpa =
+      currentSearchState.resolvedContact?.vpa ||
+      currentSearchState.resolvedContact?.displayName ||
+      "";
+    setTransactionDraft((prev) => ({
+      ...prev,
+      contactId: currentSearchState.contactId,
+      recipientVpa: newVpa || prev.recipientVpa,
+    }));
+  }
+
+  // Sync mode changes with URL search params
+  const handleModeChange = (newMode: AnalyzerMode) => {
+    if (newMode === activeMode) return;
+    setActiveMode(newMode);
+    setResultState("idle");
+
+    const newUrl = buildAnalyzeSearchUrl({
+      mode: newMode,
+      contactId: newMode === "transaction" ? transactionDraft.contactId : undefined,
+    });
+    router.replace(newUrl, { scroll: false });
+
+    // Focus panel heading for keyboard screen-reader accessibility on explicit mode switch
+    requestAnimationFrame(() => {
+      inputHeadingRef.current?.focus();
+    });
+  };
+
+  const updateTransactionDraft = (updates: Partial<TransactionDraft>) => {
+    setTransactionDraft((prev) => ({ ...prev, ...updates }));
+  };
+
+  const updateMessageDraft = (updates: Partial<MessageDraft>) => {
+    setMessageDraft((prev) => ({ ...prev, ...updates }));
+  };
+
+  const updateReceiverDraft = (updates: Partial<ReceiverDraft>) => {
+    setReceiverDraft((prev) => ({ ...prev, ...updates }));
+  };
+
+  const handleSimulateSubmit = () => {
+    setResultState("loading");
+    setTimeout(() => {
+      setResultState("completed");
+    }, 600);
+  };
+
+  // Render form for active mode
+  const renderActiveForm = () => {
+    if (activeMode === "transaction") {
+      if (renderTransactionForm) {
+        return renderTransactionForm({
+          draft: transactionDraft,
+          onChange: updateTransactionDraft,
+          onSubmit: handleSimulateSubmit,
+        });
+      }
+      return (
+        <div className="space-y-4">
+          {currentSearchState.resolvedContact && (
+            <div className="p-3 bg-[var(--bg-subtle,#f1f5f9)] rounded-[6px] border border-[var(--border-default,#dfe4ec)] text-xs text-[var(--text-secondary,#566074)]">
+              Selected contact: <span className="font-semibold text-[var(--text-primary,#172033)]">{currentSearchState.resolvedContact.displayName}</span> ({currentSearchState.resolvedContact.vpa})
+            </div>
+          )}
+          <TextField
+            label="Recipient VPA or UPI ID"
+            placeholder="e.g. merchant@upi or 9876543210@paytm"
+            value={transactionDraft.recipientVpa}
+            onChange={(e) => updateTransactionDraft({ recipientVpa: e.target.value })}
+            description="Enter a virtual payment address or phone number"
+          />
+          <AmountField
+            label="Transaction Amount"
+            placeholder="0.00"
+            value={transactionDraft.amount}
+            onChange={(e) => updateTransactionDraft({ amount: e.target.value })}
+            description="Amount in Indian Rupees (INR)"
+          />
+          <TextArea
+            label="Note or Transfer Description"
+            placeholder="Optional note (e.g., Rent payment, store purchase)"
+            value={transactionDraft.note}
+            onChange={(e) => updateTransactionDraft({ note: e.target.value })}
+            rows={2}
+          />
+          <Button
+            variant="primary"
+            className="w-full min-h-[44px]"
+            onClick={handleSimulateSubmit}
+          >
+            Check Transaction Risk
+          </Button>
+        </div>
+      );
+    }
+
+    if (activeMode === "message") {
+      if (renderMessageForm) {
+        return renderMessageForm({
+          draft: messageDraft,
+          onChange: updateMessageDraft,
+          onSubmit: handleSimulateSubmit,
+        });
+      }
+      return (
+        <div className="space-y-4">
+          <TextArea
+            label="Scam Message Text or Transcript"
+            placeholder="Paste SMS, WhatsApp message, Telegram request, or call notes here..."
+            value={messageDraft.rawMessage}
+            onChange={(e) => updateMessageDraft({ rawMessage: e.target.value })}
+            rows={5}
+            description="Consent required before submitting sensitive message text."
+          />
+          <TextField
+            label="Sender or Number (Optional)"
+            placeholder="e.g., +91 98765 43210 or Unknown Sender"
+            value={messageDraft.sender}
+            onChange={(e) => updateMessageDraft({ sender: e.target.value })}
+          />
+          <Button
+            variant="primary"
+            className="w-full min-h-[44px]"
+            onClick={handleSimulateSubmit}
+          >
+            Analyze Message Language
+          </Button>
+        </div>
+      );
+    }
+
+    if (activeMode === "receiver") {
+      if (renderReceiverForm) {
+        return renderReceiverForm({
+          draft: receiverDraft,
+          onChange: updateReceiverDraft,
+          onSubmit: handleSimulateSubmit,
+        });
+      }
+      return (
+        <div className="space-y-4">
+          <TextField
+            label="Receiver VPA to Inspect"
+            placeholder="e.g. receiver.account@bank"
+            value={receiverDraft.receiverVpa}
+            onChange={(e) => updateReceiverDraft({ receiverVpa: e.target.value })}
+            description="Evaluates temporal flow aggregates & pass-through ratios"
+          />
+          <Button
+            variant="primary"
+            className="w-full min-h-[44px]"
+            onClick={handleSimulateSubmit}
+          >
+            Check Mule Account Signals
+          </Button>
+        </div>
+      );
+    }
+
+    return null;
+  };
+
+  return (
+    <div className="w-full space-y-6">
+      {/* Top Mode Selection Bar */}
+      <div className="w-full max-w-md mx-auto min-[900px]:mx-0">
+        <AnalyzerModeControl
+          value={activeMode}
+          onChange={handleModeChange}
+        />
+      </div>
+
+      {/* Two-Column Responsive Workspace Grid */}
+      <div className="grid grid-cols-1 min-[900px]:grid-cols-12 gap-6 items-start">
+        {/* Input/Workflow Column (7 cols desktop) */}
+        <div className="min-[900px]:col-span-7">
+          <Panel
+            as="section"
+            variant="default"
+            aria-labelledby="analyzer-input-heading"
+            className="w-full"
+          >
+            <h2
+              id="analyzer-input-heading"
+              ref={inputHeadingRef}
+              tabIndex={-1}
+              className="text-base font-semibold text-[var(--text-primary,#172033)] mb-4 focus:outline-none focus:ring-2 focus:ring-[var(--focus-ring,#8ab4f8)] rounded-[4px]"
+            >
+              {activeMode === "transaction" && "Transaction Risk Assessment"}
+              {activeMode === "message" && "Scam Message Inspector"}
+              {activeMode === "receiver" && "Mule Receiver Analysis"}
+            </h2>
+
+            {renderActiveForm()}
+          </Panel>
+        </div>
+
+        {/* Result/Help Column (5 cols desktop) */}
+        <div className="min-[900px]:col-span-5">
+          {renderResultRegion ? (
+            renderResultRegion({ mode: activeMode, state: resultState })
+          ) : (
+            <AnalyzerResultRegion
+              mode={activeMode}
+              state={resultState}
+              onRetry={() => setResultState("idle")}
+            />
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}

@@ -9,7 +9,7 @@
   --bg-subtle: #f1f5f9;
   --text-primary: #172033;
   --text-secondary: #566074;
-  --text-muted: #687181;
+  --text-muted: #596273;
   --accent-primary: #1565c0;
   --accent-primary-hover: #1255a8;
   --accent-cyan: #0f9d9a;
@@ -126,6 +126,9 @@
 
 @theme inline {
   --color-*: initial;
+  --color-white: #ffffff;
+  --color-black: #000000;
+  --color-transparent: transparent;
   --color-page: var(--bg-base);
   --color-surface: var(--bg-surface);
   --color-surface-subtle: var(--bg-subtle);
