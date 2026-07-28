@@ -7,6 +7,7 @@ import {
   UserActionTypeSchema,
   UserActionSchema,
   DecisionAuditRecordSchema,
+  AuditSummarySchema,
 } from "../lib/contracts/schemas";
 import { DecisionId, RequestId, IsoTimestamp, NormalizedScore } from "../lib/contracts/primitives";
 
@@ -16,5 +17,6 @@ export type CoverageState = z.infer<typeof CoverageStateSchema>;
 export type RiskDecision = z.infer<typeof RiskDecisionSchema>;
 export type UserActionType = z.infer<typeof UserActionTypeSchema>;
 export type UserAction = z.infer<typeof UserActionSchema>;
+export type AuditSummary = z.infer<typeof AuditSummarySchema>;
 export type DecisionAuditRecord = z.infer<typeof DecisionAuditRecordSchema>;
 export type { DecisionId, RequestId, IsoTimestamp, NormalizedScore };

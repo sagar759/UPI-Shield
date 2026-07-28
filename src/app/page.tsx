@@ -1,18 +1,10 @@
 import type { Metadata } from "next";
+import { HomeDashboard } from "@/components/home/home-dashboard";
 
 export const metadata: Metadata = {
   title: "Home",
 };
 
 export default function Home() {
-  return (
-    <div className="p-page-gutter max-w-content-max mx-auto">
-      <h1 className="text-page-title font-ui-bold text-fg-primary mb-4">
-        UPI Shield Home
-      </h1>
-      <p className="text-body text-fg-secondary">
-        Welcome to UPI Shield, an AI-assisted fraud-prevention layer for Indian digital payments.
-      </p>
-    </div>
-  );
+  return <HomeDashboard />;
 }

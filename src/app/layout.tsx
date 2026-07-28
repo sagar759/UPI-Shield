@@ -32,7 +32,7 @@ export default function RootLayout({
           {/* Accessibility Skip Link */}
           <a
             href="#main-content"
-            className="visually-hidden focus:not-visually-hidden focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:bg-surface focus:text-fg-primary focus:p-4 focus:border focus:border-border focus:rounded-control"
+            className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:bg-surface focus:text-fg-primary focus:p-4 focus:border focus:border-border focus:rounded-control focus:outline-focus"
           >
             Skip to content
           </a>

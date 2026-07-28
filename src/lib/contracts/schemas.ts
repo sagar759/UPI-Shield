@@ -307,8 +307,16 @@ export const UserActionSchema = z.object({
   metadata: z.record(z.string(), z.unknown()).optional(),
 });
 
+export const AuditSummarySchema = z.object({
+  receiverId: ProfileIdSchema.optional(),
+  amount: RupeeAmountSchema.optional(),
+  payeeName: z.string().trim().max(256).optional(),
+});
+export type AuditSummary = z.infer<typeof AuditSummarySchema>;
+
 export const DecisionAuditRecordSchema = z.object({
   decision: RiskDecisionSchema,
+  summary: AuditSummarySchema.optional(),
   schemaVersion: z.literal(SCHEMA_VERSIONS.decisionAudit),
   featureVersion: z.literal(FEATURE_VERSION),
   policyVersion: z.literal(POLICY_VERSION),

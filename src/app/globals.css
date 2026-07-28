@@ -10,8 +10,8 @@
   --text-primary: #172033;
   --text-secondary: #566074;
   --text-muted: #687181;
-  --accent-primary: #1a73e8;
-  --accent-primary-hover: #155fc0;
+  --accent-primary: #1565c0;
+  --accent-primary-hover: #1255a8;
   --accent-cyan: #0f9d9a;
   --accent-yellow: #f9ab00;
   --border-default: #dfe4ec;
@@ -369,7 +369,19 @@
     white-space: nowrap;
     border: 0;
   }
+
+  .not-visually-hidden {
+    position: static;
+    width: auto;
+    height: auto;
+    padding: initial;
+    margin: initial;
+    overflow: visible;
+    clip: auto;
+    white-space: normal;
+  }
 }
+
 
 @media (min-width: 56.25rem) {
   :root {
