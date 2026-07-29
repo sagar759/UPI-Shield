@@ -89,7 +89,7 @@ describe("AnalyzerWorkspace Component", () => {
     render(<AnalyzerWorkspace />);
 
     expect(screen.getByRole("radio", { name: /transaction/i })).toHaveAttribute("aria-checked", "true");
-    expect(screen.getByText(/selected contact:/i)).toBeInTheDocument();
+    expect(screen.getByText(/prefilled synthetic contact:/i)).toBeInTheDocument();
     expect(screen.getByText(/ramesh verma \(landlord\)/i)).toBeInTheDocument();
 
     const recipientInput = screen.getByLabelText(/recipient vpa or upi id/i);
@@ -100,7 +100,7 @@ describe("AnalyzerWorkspace Component", () => {
     const { rerender } = render(<AnalyzerWorkspace />);
 
     const amountInput = screen.getByLabelText(/transaction amount/i);
-    const noteInput = screen.getByLabelText(/note or transfer description/i);
+    const noteInput = screen.getByLabelText(/payment note \/ description/i);
     fireEvent.change(amountInput, { target: { value: "5000" } });
     fireEvent.change(noteInput, { target: { value: "Monthly Rent" } });
 

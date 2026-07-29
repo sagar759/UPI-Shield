@@ -2,7 +2,7 @@
 
 ## Status
 
-Phase 16 complete. Specification 16 (Analyzer Workspace) is implemented and verified. Continue with the next approved specification after `Specs-folder/16-analyzer-workspace.md`.
+Phase 17 complete. Specification 17 (Transaction Analyzer Form) is implemented and verified. Continue with the next approved specification after `Specs-folder/17-transaction-analyzer-form.md`.
 
 ## Implemented
 
@@ -38,17 +38,24 @@ Phase 16 complete. Specification 16 (Analyzer Workspace) is implemented and veri
   - **Testing**: Created unit tests in `src/test/navigation.test.ts` and `src/test/payment-actions.test.tsx` verifying intent validation, URL generation, VPA privacy boundaries, axe accessibility compliance, and updated `src/test/home.test.tsx`.
 - Spec 16: Analyzer Workspace. Built responsive `/analyze` workspace with stable 2-column desktop layout (7 cols workflow / 5 cols result) and 1-column mobile stack (<900px).
   - **Segmented Mode Control (`AnalyzerModeControl`)**: Implemented 3-option mode selector (`transaction`, `message`, `receiver`) with keyboard accessibility, ARIA radiogroup, and overflow-free 360px layout.
-  - **Workspace State Model & Draft Preservation**: Built `AnalyzerWorkspace` client container with isolated session draft states (`transactionDraft`, `messageDraft`, `receiverDraft`) preserving form fields independently across mode switches during the session without cross-form field leakage or silent submissions.
+  - **Workspace State Model & Draft Preservation**: Built `AnalyzerWorkspace` client container with isolated session draft states preserving form fields independently across mode switches during the session without cross-form field leakage or silent submissions.
   - **Result Region & Information Architecture (`AnalyzerResultRegion`)**: Built stable min-height result panel managing `idle` (unscored info & checked signal breakdown), `loading`, `error`, `degraded`, and `completed` states with `LiveRegion` announcements.
   - **Search State Normalization (`analyze-search-state.ts`)**: Implemented `parseAnalyzeSearchParams` and `buildAnalyzeSearchUrl` mapping Spec 15 intents (`scan-pay`, `pay-contact`, `bank-transfer`, `check-upi-id`, `demo-scenarios`) to canonical workspace modes and enforcing privacy boundary (stripping `@` from `contactId` and `scenario`).
   - **Focus & Routing**: Managed accessibility heading focus on explicit mode switches without stealing focus during typing; wrapped workspace in `Suspense` boundary on `/analyze/page.tsx` for Next.js 16 SSR/Turbopack compliance.
   - **Testing**: Added unit tests in `src/test/analyze-search-state.test.ts` and `src/test/analyzer-workspace.test.tsx` (100% coverage, axe accessibility compliant) and E2E tests in `tests/e2e/analyzer-workspace.spec.ts`.
+- Spec 17: Transaction Analyzer Form. Built an ergonomic, accessible pre-payment transaction risk evaluation form complying with the v1 `TransactionCheckInputSchema` contract without initiating live transactions or calling bank APIs.
+  - **Receiver Resolution (`ReceiverField`)**: Built ARIA-compliant combobox (`role="combobox"`, `aria-expanded`, `aria-controls`, `aria-activedescendant`, keyboard ArrowUp/ArrowDown/Escape/Enter navigation) resolving approved synthetic contacts (`DEMO_CONTACTS` with verbatim VPAs), and safe manual demo entry. Prominently displays synthetic prefill disclosure badges.
+  - **Rupee Amount Parsing (`parseRupeeAmountInput`)**: Cleans pasted currency symbols (`₹`, `INR`, `Rs.`), spaces, and commas (`1,00,000` -> `100000`). Enforces positive finite numeric validation and demo limit ceiling (`₹5,00,000` INR limit with standard NPCI single-transaction guidance at `₹1,00,000`).
+  - **Contextual Signals (`PaymentContextFields`)**: Implemented payment type/channel controls (`scan_pay`, `pay_contact`, `bank_transfer`, `check_upi`), note category select, 500-char memo description (with `detectForbiddenSecrets` rejecting PIN/OTP/CVV), dynamic failure count options (supporting 4, 6, 7, etc.), point-in-time risk signal checkboxes (`isCollectRequest`, `hasRefundContext`, `hasDeviceChange`, `hasLocationChange`, `isKnownRecurring`), and typed Spec 20 scam message integration slot (`includeMessage`).
+  - **Form State & Runtime Contract (`TransactionForm` & `transaction-form-state.ts`)**: Built full touched-field validation, ref-backed callback handling, post-render focus management for `ErrorSummary`, and Zod contract builder `buildTransactionCheckInput` returning versioned `TransactionCheckInput` (`TransactionRiskInput`). Surfaced construction failures via `summaryErrors` without silent open states.
+  - **Workspace Integration & Full Draft Persistence**: Updated `AnalyzerWorkspace` to persist complete `TransactionFormDraft` state across mode switches, restoring all toggles, notes, amounts, and failure counts without draft data loss.
+  - **Testing**: Added unit tests in `src/test/transaction-form-state.test.ts` (12 tests) and `src/test/transaction-form.test.tsx` (6 tests, 100% axe compliant), updated `src/test/analyzer-workspace.test.tsx` (8 tests), and verified 285 unit tests + 42 Playwright E2E tests across desktop (1440x900) and mobile (360x800).
 - Quality commands and fixture naming are documented in `README.md`.
 
 ## Verified
 
-- `npm run check`: lint (eslint), typecheck (tsc), 247 unit tests in 18 test files, and production build (`next build`) passed.
-- `npm run test:e2e`: 34 Playwright end-to-end tests passed across 1440x900 and 360x800 viewports.
+- `npm run check`: lint (eslint), typecheck (tsc), 285 unit tests in 22 test files, and production build (`next build`) passed cleanly.
+- `npm run test:e2e`: 42 Playwright end-to-end tests passed across 1440x900 desktop and 360x800 mobile viewports.
 - `npm run test:coverage`: passed with high coverage across domain and UI primitives.
 - `git diff --check`: passed cleanly.
 

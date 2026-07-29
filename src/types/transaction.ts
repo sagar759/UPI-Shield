@@ -11,4 +11,6 @@ export type PaymentType = z.infer<typeof PaymentTypeSchema>;
 export type TransactionInput = z.infer<typeof TransactionInputSchema>;
 export type TransactionFeatures = z.infer<typeof TransactionFeaturesSchema>;
 export type TransactionCheckInput = z.infer<typeof TransactionCheckInputSchema>;
+export type TransactionRiskInput = TransactionCheckInput;
 export type { TransactionId, RupeeAmount, IsoTimestamp, ProfileId };
+

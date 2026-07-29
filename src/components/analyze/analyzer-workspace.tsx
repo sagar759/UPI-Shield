@@ -9,9 +9,10 @@ import {
 } from "@/components/analyze/analyzer-result-region";
 import { Panel } from "@/components/ui/panel";
 import { TextField } from "@/components/ui/text-field";
-import { AmountField } from "@/components/ui/amount-field";
 import { TextArea } from "@/components/ui/text-area";
 import { Button } from "@/components/ui/button";
+import { TransactionForm } from "@/components/analyze/transaction/transaction-form";
+import { type TransactionFormDraft } from "@/lib/forms/transaction-form-state";
 import {
   parseAnalyzeSearchParams,
   buildAnalyzeSearchUrl,
@@ -158,6 +159,8 @@ export function AnalyzerWorkspace({
     }, 600);
   };
 
+  const [fullTransactionDraft, setFullTransactionDraft] = React.useState<TransactionFormDraft | undefined>(undefined);
+
   // Render form for active mode
   const renderActiveForm = () => {
     if (activeMode === "transaction") {
@@ -169,41 +172,23 @@ export function AnalyzerWorkspace({
         });
       }
       return (
-        <div className="space-y-4">
-          {currentSearchState.resolvedContact && (
-            <div className="p-3 bg-[var(--bg-subtle,#f1f5f9)] rounded-[6px] border border-[var(--border-default,#dfe4ec)] text-xs text-[var(--text-secondary,#566074)]">
-              Selected contact: <span className="font-semibold text-[var(--text-primary,#172033)]">{currentSearchState.resolvedContact.displayName}</span> ({currentSearchState.resolvedContact.vpa})
-            </div>
-          )}
-          <TextField
-            label="Recipient VPA or UPI ID"
-            placeholder="e.g. merchant@upi or 9876543210@paytm"
-            value={transactionDraft.recipientVpa}
-            onChange={(e) => updateTransactionDraft({ recipientVpa: e.target.value })}
-            description="Enter a virtual payment address or phone number"
-          />
-          <AmountField
-            label="Transaction Amount"
-            placeholder="0.00"
-            value={transactionDraft.amount}
-            onChange={(e) => updateTransactionDraft({ amount: e.target.value })}
-            description="Amount in Indian Rupees (INR)"
-          />
-          <TextArea
-            label="Note or Transfer Description"
-            placeholder="Optional note (e.g., Rent payment, store purchase)"
-            value={transactionDraft.note}
-            onChange={(e) => updateTransactionDraft({ note: e.target.value })}
-            rows={2}
-          />
-          <Button
-            variant="primary"
-            className="w-full min-h-[44px]"
-            onClick={handleSimulateSubmit}
-          >
-            Check Transaction Risk
-          </Button>
-        </div>
+        <TransactionForm
+          contactId={currentSearchState.contactId}
+          scenarioId={currentSearchState.scenarioId}
+          initialDraft={fullTransactionDraft}
+          onDraftChange={(newDraft) => {
+            setFullTransactionDraft(newDraft);
+            updateTransactionDraft({
+              amount: newDraft.amount,
+              recipientVpa: newDraft.receiverInput,
+              note: newDraft.noteText,
+              contactId: newDraft.contactId,
+            });
+          }}
+          onRiskInputSubmit={() => {
+            handleSimulateSubmit();
+          }}
+        />
       );
     }
 
