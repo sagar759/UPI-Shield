@@ -102,6 +102,7 @@ export const TransactionFeaturesSchema = z.object({
   amountZScore: z.number().finite(),
   isNewPayee: z.boolean(),
   relationshipAgeDays: NonnegativeIntegerSchema,
+  isKnownRecurring: z.boolean().optional(),
   hourDeviation: z.number().finite().nonnegative(),
   velocityCount5m: NonnegativeIntegerSchema,
   velocityValue5m: z.number().finite().nonnegative(),

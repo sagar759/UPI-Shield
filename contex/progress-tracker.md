@@ -2,7 +2,7 @@
 
 ## Status
 
-Phase 17 complete. Specification 17 (Transaction Analyzer Form) is implemented and verified. Continue with the next approved specification after `Specs-folder/17-transaction-analyzer-form.md`.
+Phase 18 complete. Specification 18 (Transaction Point-in-Time Feature Builder) is implemented and verified with feature version `feature-contract/v1`. Continue with the next approved specification after `Specs-folder/18-transaction-feature-builder.md`.
 
 ## Implemented
 
@@ -50,6 +50,11 @@ Phase 17 complete. Specification 17 (Transaction Analyzer Form) is implemented a
   - **Form State & Runtime Contract (`TransactionForm` & `transaction-form-state.ts`)**: Built full touched-field validation, ref-backed callback handling, post-render focus management for `ErrorSummary`, and Zod contract builder `buildTransactionCheckInput` returning versioned `TransactionCheckInput` (`TransactionRiskInput`). Surfaced construction failures via `summaryErrors` without silent open states.
   - **Workspace Integration & Full Draft Persistence**: Updated `AnalyzerWorkspace` to persist complete `TransactionFormDraft` state across mode switches, restoring all toggles, notes, amounts, and failure counts without draft data loss.
   - **Testing**: Added unit tests in `src/test/transaction-form-state.test.ts` (12 tests) and `src/test/transaction-form.test.tsx` (6 tests, 100% axe compliant), updated `src/test/analyzer-workspace.test.tsx` (8 tests), and verified 285 unit tests + 42 Playwright E2E tests across desktop (1440x900) and mobile (360x800).
+- Spec 18: Transaction Point-in-Time Feature Builder. Built pure domain feature extraction engine adhering strictly to point-in-time calculation boundaries and `feature-contract/v1`.
+  - **Feature Schema Catalog (`src/lib/detectors/transaction/feature-schema.ts`)**: Defined versioned feature catalog (`TRANSACTION_FEATURE_CATALOG`, version `feature-contract/v1`) with explicit source, data type, calculation window, default values, unavailable handling rules, and data leakage notes for all features. Defined `TransactionFeatureQuality` metadata schema.
+  - **History Window Filtering (`src/lib/detectors/transaction/history-windows.ts`)**: Created strict point-in-time windowing functions excluding events at or after decision timestamp (`timestamp >= decisionTimestamp`), validating positive finite amounts, deduplicating IDs, and sorting history chronologically ascending.
+  - **Feature Extraction Engine (`src/lib/detectors/transaction/build-features.ts`)**: Calculated robust sender median and MAD z-score, relationship age, recurring rent / payment similarity (`isKnownRecurring`), IST (`Asia/Kolkata`) active hour circular deviation, velocity counts/values in 5m, 30m, and 60m windows strictly prior to decision timestamp, recent failures, inactivity days, contextual flags, and quality metadata. Kept raw identifiers out of the returned feature object.
+  - **Testing & Verification (`src/lib/detectors/transaction/build-features.test.ts`)**: Built 12 Vitest unit tests verifying data leakage prevention (adding future events cannot alter earlier outputs), current event exclusion, empty/sparse history defaults, high-amount recurring rent handling, 5m/30m/60m exact cutoff boundaries, and IST timezone hour transitions.
 - Quality commands and fixture naming are documented in `README.md`.
 
 ## Verified

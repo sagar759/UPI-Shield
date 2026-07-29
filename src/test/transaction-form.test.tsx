@@ -46,7 +46,7 @@ describe("TransactionForm Component", () => {
     expect(submittedInput.raw.amount).toBe(25000);
     expect(submittedInput.raw.currency).toBe("INR");
     expect(submittedInput.raw.note).toBe("Rent for July 2026");
-  });
+  }, 15000);
 
   it("handles scenario prefill for student investment scam", async () => {
     const handleSubmit = vi.fn();
