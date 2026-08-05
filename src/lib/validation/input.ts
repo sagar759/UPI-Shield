@@ -53,12 +53,38 @@ export function hasInvalidEncoding(text: string): boolean {
 }
 
 /**
- * Detects forbidden secret-like input labels (PIN, OTP, CVV, password) in free-text fields.
+ * Pattern for concrete credential values associated with secret keywords (PIN, OTP, CVV, password, passcode).
+ */
+const CONCRETE_NUMERIC_SECRET_REGEX = /\b(pin|otp|cvv|passcode)\b[^\d\n]{0,30}\b\d{3,8}\b/gi;
+const CONCRETE_NUMERIC_PREFIX_REGEX = /\b\d{3,8}\b[^\d\n]{0,30}\b(pin|otp|cvv|passcode)\b/gi;
+const CONCRETE_PASSWORD_REGEX = /\b(password|passcode)\b[^\n]{0,20}(?:[:=]|\bis\b)\s*\S+/gi;
+const RAW_CARD_NUMBER_REGEX = /\b\d(?:[ -]?\d){12,18}\b/g;
+
+/**
+ * Identifies and redacts concrete credential values (such as PIN, OTP, CVV, password values or raw card numbers)
+ * while preserving ordinary mentions of secret terms.
+ */
+export function redactConcreteCredentials(text: string): string {
+  if (!text) return text;
+  return text
+    .replace(CONCRETE_NUMERIC_SECRET_REGEX, "$1 [REDACTED]")
+    .replace(CONCRETE_NUMERIC_PREFIX_REGEX, "[REDACTED] $1")
+    .replace(CONCRETE_PASSWORD_REGEX, "$1: [REDACTED]")
+    .replace(RAW_CARD_NUMBER_REGEX, "[REDACTED]");
+}
+
+/**
+ * Detects concrete credential values or actual secret data in free-text fields.
+ * Returns false for ordinary mentions of PIN, OTP, CVV, or password without actual credential values.
  */
 export function detectForbiddenSecrets(text: string): boolean {
-  // Look for pin, otp, cvv, password, passcode as standalone words, case-insensitive
-  const secretKeywords = /\b(pin|otp|cvv|password|passcode)\b/i;
-  return secretKeywords.test(text);
+  if (!text) return false;
+  const r1 = new RegExp(CONCRETE_NUMERIC_SECRET_REGEX.source, "i");
+  const r2 = new RegExp(CONCRETE_NUMERIC_PREFIX_REGEX.source, "i");
+  const r3 = new RegExp(CONCRETE_PASSWORD_REGEX.source, "i");
+  const r4 = new RegExp(RAW_CARD_NUMBER_REGEX.source, "g");
+
+  return r1.test(text) || r2.test(text) || r3.test(text) || r4.test(text);
 }
 
 /**

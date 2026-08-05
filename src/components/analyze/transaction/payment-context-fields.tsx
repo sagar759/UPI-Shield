@@ -6,7 +6,10 @@ import { TextArea } from "@/components/ui/text-area";
 import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioOption } from "@/components/ui/radio-group";
 import { PaymentType } from "@/types/transaction";
+import { MessageForm } from "@/components/analyze/message/message-form";
 import { QrCode, UserCheck, Landmark, Search, ShieldAlert, MessageSquare } from "lucide-react";
+
+import { MessageAnalysisInput } from "@/lib/forms/message-form-state";
 
 export interface PaymentContextFieldsProps {
   paymentType: PaymentType;
@@ -33,6 +36,9 @@ export interface PaymentContextFieldsProps {
   onIncludeMessageChange: (checked: boolean) => void;
   messageText?: string;
   onMessageTextChange?: (value: string) => void;
+  consentGiven?: boolean;
+  onConsentGivenChange?: (checked: boolean) => void;
+  onMessageAnalysisSubmit?: (input: MessageAnalysisInput) => void;
   messageTextError?: string;
   disabled?: boolean;
 }
@@ -124,7 +130,9 @@ export function PaymentContextFields({
   onIncludeMessageChange,
   messageText = "",
   onMessageTextChange,
-  messageTextError,
+  consentGiven = false,
+  onConsentGivenChange,
+  onMessageAnalysisSubmit,
   disabled = false,
 }: PaymentContextFieldsProps) {
   const failureCountOptions = React.useMemo(() => {
@@ -258,16 +266,19 @@ export function PaymentContextFields({
         />
 
         {includeMessage && (
-          <div className="pl-6 pt-1 space-y-2">
-            <TextArea
-              label="Scam Message / Call Transcript"
-              placeholder="Paste SMS, WhatsApp, Telegram, or call notes here (e.g. 'Pay ₹5,000 urgently to receive 500% returns in 24 hours')..."
-              value={messageText}
-              onChange={(e) => onMessageTextChange?.(e.target.value)}
-              error={messageTextError}
+          <div className="pt-2 border-t border-blue-200/60">
+            <MessageForm
+              mode="embedded"
+              initialDraft={{
+                messageText: messageText || "",
+                consentGiven: consentGiven ?? false,
+              }}
+              onDraftChange={(draft) => {
+                onMessageTextChange?.(draft.messageText);
+                onConsentGivenChange?.(draft.consentGiven);
+              }}
+              onAnalysisSubmit={onMessageAnalysisSubmit}
               disabled={disabled}
-              rows={3}
-              description="Message text will be passed to consent-aware scam text analyzer."
             />
           </div>
         )}

@@ -4,6 +4,7 @@ import {
   hasControlCharacters,
   hasInvalidEncoding,
   detectForbiddenSecrets,
+  redactConcreteCredentials,
   validateStringInput,
   validateRupeeAmount,
   validateTimestamp,
@@ -48,17 +49,40 @@ describe("Input Validation & Normalization Utilities", () => {
   });
 
   describe("detectForbiddenSecrets", () => {
-    it("should flag secret words case-insensitively with word boundaries", () => {
+    it("should flag concrete credential values and allow ordinary mentions", () => {
       expect(detectForbiddenSecrets("my pin is 1234")).toBe(true);
-      expect(detectForbiddenSecrets("Need the OTP to continue")).toBe(true);
-      expect(detectForbiddenSecrets("CVV is on the back")).toBe(true);
-      expect(detectForbiddenSecrets("Enter your password")).toBe(true);
-      expect(detectForbiddenSecrets("Set a secure Passcode")).toBe(true);
+      expect(detectForbiddenSecrets("OTP: 482910")).toBe(true);
+      expect(detectForbiddenSecrets("CVV is 123")).toBe(true);
+      expect(detectForbiddenSecrets("password: Secret123")).toBe(true);
+      
+      expect(detectForbiddenSecrets("Need the OTP to continue")).toBe(false);
+      expect(detectForbiddenSecrets("CVV is on the back")).toBe(false);
+      expect(detectForbiddenSecrets("Enter your password")).toBe(false);
+      expect(detectForbiddenSecrets("Set a secure Passcode")).toBe(false);
     });
 
     it("should not flag words that just contain the substring", () => {
       expect(detectForbiddenSecrets("pinpoint direction")).toBe(false);
       expect(detectForbiddenSecrets("hotplate")).toBe(false);
+    });
+  });
+
+  describe("redactConcreteCredentials", () => {
+    it("redacts raw card numbers with spaces or hyphens", () => {
+      expect(redactConcreteCredentials("Card number is 4532 0123 4567 8901")).toBe(
+        "Card number is [REDACTED]"
+      );
+      expect(redactConcreteCredentials("Card number is 4532-0123-4567-8901")).toBe(
+        "Card number is [REDACTED]"
+      );
+      expect(redactConcreteCredentials("Card number is 4532012345678901")).toBe(
+        "Card number is [REDACTED]"
+      );
+    });
+
+    it("redacts password and passcode assignments using 'is'", () => {
+      expect(redactConcreteCredentials("My password is Secret123")).toBe("My password: [REDACTED]");
+      expect(redactConcreteCredentials("passcode is SecretPasscode123")).toBe("passcode: [REDACTED]");
     });
   });
 

@@ -9,10 +9,11 @@ import {
 } from "@/components/analyze/analyzer-result-region";
 import { Panel } from "@/components/ui/panel";
 import { TextField } from "@/components/ui/text-field";
-import { TextArea } from "@/components/ui/text-area";
 import { Button } from "@/components/ui/button";
 import { TransactionForm } from "@/components/analyze/transaction/transaction-form";
 import { type TransactionFormDraft } from "@/lib/forms/transaction-form-state";
+import { MessageForm } from "@/components/analyze/message/message-form";
+import { type MessageFormDraft } from "@/lib/forms/message-form-state";
 import {
   parseAnalyzeSearchParams,
   buildAnalyzeSearchUrl,
@@ -160,6 +161,7 @@ export function AnalyzerWorkspace({
   };
 
   const [fullTransactionDraft, setFullTransactionDraft] = React.useState<TransactionFormDraft | undefined>(undefined);
+  const [fullMessageDraft, setFullMessageDraft] = React.useState<MessageFormDraft | undefined>(undefined);
 
   // Render form for active mode
   const renderActiveForm = () => {
@@ -201,29 +203,20 @@ export function AnalyzerWorkspace({
         });
       }
       return (
-        <div className="space-y-4">
-          <TextArea
-            label="Scam Message Text or Transcript"
-            placeholder="Paste SMS, WhatsApp message, Telegram request, or call notes here..."
-            value={messageDraft.rawMessage}
-            onChange={(e) => updateMessageDraft({ rawMessage: e.target.value })}
-            rows={5}
-            description="Consent required before submitting sensitive message text."
-          />
-          <TextField
-            label="Sender or Number (Optional)"
-            placeholder="e.g., +91 98765 43210 or Unknown Sender"
-            value={messageDraft.sender}
-            onChange={(e) => updateMessageDraft({ sender: e.target.value })}
-          />
-          <Button
-            variant="primary"
-            className="w-full min-h-[44px]"
-            onClick={handleSimulateSubmit}
-          >
-            Analyze Message Language
-          </Button>
-        </div>
+        <MessageForm
+          mode="standalone"
+          initialDraft={fullMessageDraft}
+          onDraftChange={(newDraft) => {
+            setFullMessageDraft(newDraft);
+            updateMessageDraft({
+              rawMessage: newDraft.messageText,
+              sender: newDraft.channel,
+            });
+          }}
+          onAnalysisSubmit={() => {
+            handleSimulateSubmit();
+          }}
+        />
       );
     }
 

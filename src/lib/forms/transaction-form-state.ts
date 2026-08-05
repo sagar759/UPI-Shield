@@ -25,6 +25,7 @@ export interface TransactionFormDraft {
   isKnownRecurring: boolean;
   includeMessage: boolean;
   messageText?: string;
+  consentGiven?: boolean;
 }
 
 export interface TransactionFormErrors {
@@ -55,6 +56,7 @@ export function createDefaultTransactionFormDraft(): TransactionFormDraft {
     isKnownRecurring: false,
     includeMessage: false,
     messageText: "",
+    consentGiven: false,
   };
 }
 
@@ -161,6 +163,7 @@ export function prefillFromScenario(scenario: DemoScenario): TransactionFormDraf
     isKnownRecurring: features.relationshipAgeDays > 30 && !features.isNewPayee,
     includeMessage: Boolean(scenario.messageInput),
     messageText: scenario.messageInput?.messageText || "",
+    consentGiven: Boolean(scenario.messageInput?.consentGiven),
   };
 }
 
@@ -222,7 +225,9 @@ export function validateTransactionFormState(
   // 5. Message text check (if includeMessage toggle is active)
   if (draft.includeMessage && (isSubmitted || touched.messageText)) {
     if (draft.messageText && draft.messageText.trim().length > 0) {
-      if (detectForbiddenSecrets(draft.messageText)) {
+      if (!draft.consentGiven) {
+        errors.messageText = "Consent is required to analyze message text";
+      } else if (detectForbiddenSecrets(draft.messageText)) {
         errors.messageText = "Message contains sensitive secret terms (PIN, OTP, CVV, or password)";
       } else if (draft.messageText.length > 10000) {
         errors.messageText = "Message text exceeds maximum length of 10,000 characters";
@@ -280,6 +285,10 @@ export function buildTransactionCheckInput(
     timestamp?: string;
   }
 ): TransactionCheckInput {
+  if (draft.includeMessage && draft.messageText && draft.messageText.trim().length > 0 && !draft.consentGiven) {
+    throw new Error("Consent is required to analyze message text");
+  }
+
   const parsedAmountResult = parseRupeeAmountInput(draft.amount);
   if (!parsedAmountResult.valid || parsedAmountResult.value === undefined) {
     throw new Error(parsedAmountResult.error || "Cannot build input from invalid amount");

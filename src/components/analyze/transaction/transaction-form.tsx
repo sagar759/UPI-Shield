@@ -260,6 +260,8 @@ export function TransactionForm({
         onIncludeMessageChange={(val) => updateDraft({ includeMessage: val })}
         messageText={draft.messageText}
         onMessageTextChange={(val) => updateDraft({ messageText: val })}
+        consentGiven={draft.consentGiven}
+        onConsentGivenChange={(val) => updateDraft({ consentGiven: val })}
         messageTextError={isSubmitted || touched.messageText ? errors.messageText : undefined}
         disabled={disabled || isLoading}
       />

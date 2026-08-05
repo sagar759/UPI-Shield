@@ -2,7 +2,7 @@
 
 ## Status
 
-Phase 18 complete. Specification 18 (Transaction Point-in-Time Feature Builder) is implemented and verified with feature version `feature-contract/v1`. Continue with the next approved specification after `Specs-folder/18-transaction-feature-builder.md`.
+Phase 20 complete. Specification 20 (Scam Message Consent and Input Form) is implemented and verified. Message consent, retention defaulting off, secret warning, fixture examples, standalone/embedded form modes, character limit (10,000 max), and draft clearing rules are fully operational. Continue with the next approved specification after `Specs-folder/20-scam-message-consent-and-form.md`.
 
 ## Implemented
 
@@ -55,11 +55,24 @@ Phase 18 complete. Specification 18 (Transaction Point-in-Time Feature Builder) 
   - **History Window Filtering (`src/lib/detectors/transaction/history-windows.ts`)**: Created strict point-in-time windowing functions excluding events at or after decision timestamp (`timestamp >= decisionTimestamp`), validating positive finite amounts, deduplicating IDs, and sorting history chronologically ascending.
   - **Feature Extraction Engine (`src/lib/detectors/transaction/build-features.ts`)**: Calculated robust sender median and MAD z-score, relationship age, recurring rent / payment similarity (`isKnownRecurring`), IST (`Asia/Kolkata`) active hour circular deviation, velocity counts/values in 5m, 30m, and 60m windows strictly prior to decision timestamp, recent failures, inactivity days, contextual flags, and quality metadata. Kept raw identifiers out of the returned feature object.
   - **Testing & Verification (`src/lib/detectors/transaction/build-features.test.ts`)**: Built 12 Vitest unit tests verifying data leakage prevention (adding future events cannot alter earlier outputs), current event exclusion, empty/sparse history defaults, high-amount recurring rent handling, 5m/30m/60m exact cutoff boundaries, and IST timezone hour transitions.
+- Spec 19: Deterministic Transaction Risk Detector. Built transparent, versioned transaction behavior baseline engine adhering strictly to runtime `DetectorResultSchema` and `transaction-detector/v1`.
+  - **Rule Configuration (`src/lib/detectors/transaction/rules.ts`)**: Defined versioned transaction-only rule parameters (`DEFAULT_TRANSACTION_RULES`, version `transaction-rules/v1`) separate from global fusion policy.
+  - **Scoring Engine (`src/lib/detectors/transaction/score-transaction.ts`)**: Evaluated observable signals across all 12 transaction reason codes (`TXN_AMOUNT_RATIO_HIGH`, `TXN_AMOUNT_ZSCORE_HIGH`, `TXN_NEW_PAYEE`, `TXN_HOUR_DEVIATION`, `TXN_VELOCITY_HIGH`, `TXN_FAILURES_COUNT_HIGH`, `TXN_INACTIVITY_RESUME`, `TXN_DEVICE_CHANGE`, `TXN_LOCATION_CHANGE`, `TXN_COLLECT_REQUEST`, `TXN_REFUND_CONTEXT`, `TXN_NAME_MISMATCH`). Implemented legitimate context mitigations (recurring rent/bills dampening amount anomaly risk by `recurringMitigationFactor`, established payee relationship mitigating hour deviation, device or location changes reducing confidence by 0.05). Implemented single top-severity velocity deduplication across 5m, 30m, 60m windows. Clamped score and confidence to `[0.0, 1.0]`.
+  - **Detector Entry Point (`src/lib/detectors/transaction/transaction-detector.ts`)**: Built `evaluateTransactionRisk` returning compliant `DetectorResult` (version `transaction-detector/v1`). Handled unavailable state (`availability: "unavailable"`, `score: null`, `confidence: null`) on missing/invalid input, degraded state (`availability: "degraded"`) on non-positive amount or invalid input quality, and injected clock for latency testing (`latencyMs`). Kept exact evasion-sensitive rule thresholds internal while emitting stable reason codes.
+- Spec 20: Scam Message Consent and Input Form. Built reusable scam message input component (`MessageForm`), consent manager (`MessageConsent`), synthetic fixture catalog selector (`MessageExamples`), and form state manager (`message-form-state.ts`).
+  - **Channel Selection**: Added visible channel selection for SMS, WhatsApp, Telegram, Call Transcript, and Social Message.
+  - **Multiline Text & Character Limits**: Provided labeled multiline text field with live character count (`N / 10,000`), paste support, and safe Unicode handling up to `MAX_MESSAGE_LENGTH` (10,000 characters).
+  - **Consent Boundaries**: Implemented mandatory analysis consent (*"I consent to analyze this message for scam indicators"*) required to submit. Implemented separate optional retention consent defaulted OFF (*"Allow optional retention of raw text sample (Default: OFF)"*).
+  - **Secret-Like Input Warning & Privacy**: Displayed clear warning banner never to paste PIN, OTP, CVV, passwords, or bank credentials. Validation rejects secret terms without echoing suspected secrets in UI errors or system logs.
+  - **Synthetic Example Catalog**: Offered safe synthetic example buttons (Student Investment Scheme, Refund QR Scam, Digital Arrest Threat, Legitimate Bank Advisory) clearly labeled with a "Demo Content" badge when selected.
+  - **Draft Lifecycle**: Clears sensitive draft text on explicit "Clear Text" click or successful analysis submit. Ordinary validation errors leave draft text intact.
+  - **Standalone & Embedded Parity**: Integrated into `AnalyzerWorkspace` message mode and embedded inside `PaymentContextFields` in the transaction form without HTML form nesting.
+  - **Testing**: Added unit tests in `src/test/message-form-state.test.ts` (8 tests) and `src/test/message-form.test.tsx` (7 tests, 100% axe compliant), verified 341 unit tests in 26 test files + 42 Playwright E2E tests across desktop (1440x900) and mobile (360x800).
 - Quality commands and fixture naming are documented in `README.md`.
 
 ## Verified
 
-- `npm run check`: lint (eslint), typecheck (tsc), 285 unit tests in 22 test files, and production build (`next build`) passed cleanly.
+- `npm run check`: lint (eslint), typecheck (tsc), 341 unit tests in 26 test files, and production build (`next build`) passed cleanly.
 - `npm run test:e2e`: 42 Playwright end-to-end tests passed across 1440x900 desktop and 360x800 mobile viewports.
 - `npm run test:coverage`: passed with high coverage across domain and UI primitives.
 - `git diff --check`: passed cleanly.
