@@ -17,6 +17,9 @@ export const FEATURE_VERSION = "feature-contract/v1";
 export const POLICY_VERSION = "risk-policy/v1";
 export const EXPLANATION_COPY_VERSION = "explanation-copy/en-IN/v1";
 export const STORAGE_VERSION = "decision-storage/v1";
+export const TEXT_PREPROCESSING_VERSION = "text-preprocessing/v1";
+export const ENTITY_EXTRACTION_VERSION = "entity-extraction/v1";
+export const TEXT_DETECTOR_VERSION = "text-detector/v1";
 
 export const CONTRACT_VERSIONS = {
   schemas: SCHEMA_VERSIONS,
@@ -24,6 +27,9 @@ export const CONTRACT_VERSIONS = {
   policy: POLICY_VERSION,
   explanationCopy: EXPLANATION_COPY_VERSION,
   storage: STORAGE_VERSION,
+  textPreprocessing: TEXT_PREPROCESSING_VERSION,
+  entityExtraction: ENTITY_EXTRACTION_VERSION,
+  textDetector: TEXT_DETECTOR_VERSION,
 } as const;
 
 export type SchemaVersion =
